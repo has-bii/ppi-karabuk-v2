@@ -1,0 +1,398 @@
+[
+  {
+    "name": "Mimarlık"
+  },
+  {
+    "name": "Tarih"
+  },
+  {
+    "name": "Diş Hekimliği Fakültesi"
+  },
+  {
+    "name": "Arkeoloji"
+  },
+  {
+    "name": "Coğrafya"
+  },
+  {
+    "name": "Coğrafya (İÖ)"
+  },
+  {
+    "name": "Felsefe"
+  },
+  {
+    "name": "İngiliz Dili ve Edebiyatı"
+  },
+  {
+    "name": "İngiliz Dili ve Edebiyatı (İÖ)"
+  },
+  {
+    "name": "Sanat Tarihi"
+  },
+  {
+    "name": "Sanat Tarihi (İÖ)"
+  },
+  {
+    "name": "Sosyoloji"
+  },
+  {
+    "name": "Sosyoloji (İÖ)"
+  },
+  {
+    "name": "Tarih (İÖ)"
+  },
+  {
+    "name": "Türk Dili ve Edebiyatı"
+  },
+  {
+    "name": "Türk Dili ve Edebiyatı (İÖ)"
+  },
+  {
+    "name": "Kimya"
+  },
+  {
+    "name": "Matematik"
+  },
+  {
+    "name": "Spor Yöneticiliği"
+  },
+  {
+    "name": "Spor Yöneticiliği (İÖ)"
+  },
+  {
+    "name": "İktisat"
+  },
+  {
+    "name": "Siyaset Bilimi ve Kamu Yönetimi"
+  },
+  {
+    "name": "Siyaset Bilimi ve Kamu Yönetimi (İÖ)"
+  },
+  {
+    "name": "Sosyal Hizmet"
+  },
+  {
+    "name": "Uluslararası İlişkiler"
+  },
+  {
+    "name": "Uluslararası İlişkiler (İÖ)"
+  },
+  {
+    "name": "Uluslararası İlişkiler (%100 İngilizce)"
+  },
+  {
+    "name": "İlahiyat"
+  },
+  {
+    "name": "İlahiyat (İÖ)"
+  },
+  {
+    "name": "Aktüerya Bilimleri"
+  },
+  {
+    "name": "Halkla İlişkiler ve Tanıtım"
+  },
+  {
+    "name": "Halkla İlişkiler ve Tanıtım (İÖ)"
+  },
+  {
+    "name": "İşletme"
+  },
+  {
+    "name": "Bilgisayar Mühendisliği (% 30 İngilizce)"
+  },
+  {
+    "name": "Bilgisayar Mühendisliği (% 30 İngilizce) (İÖ)"
+  },
+  {
+    "name": "Bilgisayar Mühendisliği (%100 İngilizce)"
+  },
+  {
+    "name": "Elektrik-Elektronik Mühendisliği (% 30 İngilizce)"
+  },
+  {
+    "name": "Elektrik-Elektronik Mühendisliği (% 30 İngilizce) (İÖ)"
+  },
+  {
+    "name": "Elektrik-Elektronik Mühendisliği (%100 İngilizce)"
+  },
+  {
+    "name": "Endüstri Mühendisliği"
+  },
+  {
+    "name": "Endüstri Mühendisliği (İÖ)"
+  },
+  {
+    "name": "İnşaat Mühendisliği"
+  },
+  {
+    "name": "Makine Mühendisliği (% 30 İngilizce)"
+  },
+  {
+    "name": "Makine Mühendisliği (%100 İngilizce)"
+  },
+  {
+    "name": "Mekatronik Mühendisliği"
+  },
+  {
+    "name": "Metalurji ve Malzeme Mühendisliği (%100 İngilizce)"
+  },
+  {
+    "name": "Otomotiv Mühendisliği (% 30 İngilizce)"
+  },
+  {
+    "name": "Raylı Sistemler Mühendisliği"
+  },
+  {
+    "name": "Raylı Sistemler Mühendisliği (%100 İngilizce)"
+  },
+  {
+    "name": "Tıp Mühendisliği (% 30 İngilizce)"
+  },
+  {
+    "name": "Yazılım Mühendisliği"
+  },
+  {
+    "name": "Orman Mühendisliği"
+  },
+  {
+    "name": "Endüstri Ürünleri Tasarımı"
+  },
+  {
+    "name": "Gastronomi ve Mutfak Sanatları"
+  },
+  {
+    "name": "Turizm İşletmeciliği"
+  },
+  {
+    "name": "Turizm Rehberliği"
+  },
+  {
+    "name": "Çocuk Gelişimi"
+  },
+  {
+    "name": "Ebelik"
+  },
+  {
+    "name": "Fizyoterapi ve Rehabilitasyon"
+  },
+  {
+    "name": "Hemşirelik"
+  },
+  {
+    "name": "Mekatronik Mühendisliği"
+  },
+  {
+    "name": "Tıp Fakültesi"
+  },
+  {
+    "name": "Radyo, Televizyon ve Sinema"
+  },
+  {
+    "name": "Gazetecilik"
+  },
+  {
+    "name": "Adalet"
+  },
+  {
+    "name": "Adalet (İÖ)"
+  },
+  {
+    "name": "Aşçılık"
+  },
+  {
+    "name": "Gıda Kalite Kontrolü ve Analizi"
+  },
+  {
+    "name": "İş Sağlığı ve Güvenliği"
+  },
+  {
+    "name": "Bilgi Güvenliği Teknolojisi"
+  },
+  {
+    "name": "İş Sağlığı ve Güvenliği"
+  },
+  {
+    "name": "İş Sağlığı ve Güvenliği (İÖ)"
+  },
+  {
+    "name": "İş Sağlığı ve Güvenliği (Uzaktan Öğretim)"
+  },
+  {
+    "name": "Özel Güvenlik ve Koruma"
+  },
+  {
+    "name": "Özel Güvenlik ve Koruma (İÖ)"
+  },
+  {
+    "name": "Raylı Sistemler Elektrik ve Elektronik Teknolojisi"
+  },
+  {
+    "name": "Raylı Sistemler Elektrik ve Elektronik Teknolojisi (İÖ)"
+  },
+  {
+    "name": "Raylı Sistemler Makinistlik"
+  },
+  {
+    "name": "Raylı Sistemler Makinistlik (İÖ)"
+  },
+  {
+    "name": "Bilgisayar Teknolojisi"
+  },
+  {
+    "name": "Çocuk Gelişimi"
+  },
+  {
+    "name": "Çocuk Gelişimi (İÖ)"
+  },
+  {
+    "name": "Çocuk Gelişimi (Uzaktan Öğretim)"
+  },
+  {
+    "name": "Geleneksel El Sanatları"
+  },
+  {
+    "name": "İç Mekan Tasarımı"
+  },
+  {
+    "name": "İç Mekan Tasarımı (İÖ)"
+  },
+  {
+    "name": "İşletme Yönetimi"
+  },
+  {
+    "name": "Mimari Restorasyon"
+  },
+  {
+    "name": "Mimari Restorasyon (İÖ)"
+  },
+  {
+    "name": "Muhasebe ve Vergi Uygulamaları"
+  },
+  {
+    "name": "Radyo ve Televizyon Programcılığı"
+  },
+  {
+    "name": "Radyo ve Televizyon Programcılığı (İÖ)"
+  },
+  {
+    "name": "Turist Rehberliği"
+  },
+  {
+    "name": "Turizm ve Otel İşletmeciliği"
+  },
+  {
+    "name": "Turizm ve Otel İşletmeciliği (İÖ)"
+  },
+  {
+    "name": "Uygulamalı İngilizce ve Çevirmenlik (İngilizce)"
+  },
+  {
+    "name": "Uygulamalı İngilizce ve Çevirmenlik (İngilizce) (İÖ)"
+  },
+  {
+    "name": "Ağız ve Diş Sağlığı"
+  },
+  {
+    "name": "Ağız ve Diş Sağlığı (İÖ)"
+  },
+  {
+    "name": "Ameliyathane Hizmetleri"
+  },
+  {
+    "name": "Fizyoterapi"
+  },
+  {
+    "name": "Fizyoterapi (İÖ)"
+  },
+  {
+    "name": "İlk ve Acil Yardım"
+  },
+  {
+    "name": "İlk ve Acil Yardım (İÖ)"
+  },
+  {
+    "name": "Optisyenlik"
+  },
+  {
+    "name": "Ortopedik Protez ve Ortez"
+  },
+  {
+    "name": "Otopsi Yardımcılığı"
+  },
+  {
+    "name": "Sağlık Kurumları İşletmeciliği"
+  },
+  {
+    "name": "Sağlık Kurumları İşletmeciliği (İÖ)"
+  },
+  {
+    "name": "Sağlık Kurumları İşletmeciliği (Uzaktan Öğretim)"
+  },
+  {
+    "name": "Tıbbi Dokümantasyon ve Sekreterlik"
+  },
+  {
+    "name": "Tıbbi Dokümantasyon ve Sekreterlik (İÖ)"
+  },
+  {
+    "name": "Tıbbi Laboratuvar Teknikleri"
+  },
+  {
+    "name": "Tıbbi Laboratuvar Teknikleri (İÖ)"
+  },
+  {
+    "name": "Tıbbi Tanıtım ve Pazarlama"
+  },
+  {
+    "name": "Tıbbi Tanıtım ve Pazarlama (İÖ)"
+  },
+  {
+    "name": "Yaşlı Bakımı"
+  },
+  {
+    "name": "Yaşlı Bakımı (İÖ)"
+  },
+  {
+    "name": "Bilgisayar Programcılığı"
+  },
+  {
+    "name": "Elektrik"
+  },
+  {
+    "name": "Elektronik Teknolojisi"
+  },
+  {
+    "name": "İklimlendirme ve Soğutma Teknolojisi"
+  },
+  {
+    "name": "Kaynak Teknolojisi"
+  },
+  {
+    "name": "Makine"
+  },
+  {
+    "name": "Otobüs Kaptanlığı"
+  },
+  {
+    "name": "Otomotiv Teknolojisi"
+  },
+  {
+    "name": "Sivil Savunma ve İtfaiyecilik"
+  },
+  {
+    "name": "Sivil Savunma ve İtfaiyecilik (İÖ)"
+  },
+  {
+    "name": "Ulaştırma ve Trafik Hizmetleri"
+  },
+  {
+    "name": "Bilgisayar Programcılığı"
+  },
+  {
+    "name": "Raylı Sistemler Makine Teknolojisi"
+  },
+  {
+    "name": "Ilahiyat"
+  }
+]

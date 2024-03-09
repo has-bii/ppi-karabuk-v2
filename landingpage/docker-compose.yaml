@@ -1,0 +1,32 @@
+version: "3"
+services:
+  PPI-Karabuk:
+    container_name: PPI-Karabuk
+    image: hasbii/ppi-karabuk:latest
+    restart: always
+    env_file: .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      LONG_LIVED_TOKEN: ${LONG_LIVED_TOKEN}
+      NEXT_PUBLIC_BLOG_TOKEN: ${NEXT_PUBLIC_BLOG_TOKEN}
+      NEXT_PUBLIC_BLOG_API: ${NEXT_PUBLIC_BLOG_API}
+      UPDATE_BLOG_TOKEN: ${UPDATE_BLOG_TOKEN}
+      BASE_URL: ${BASE_URL}
+      NODE_ENV: ${NODE_ENV}
+      EMAIL_EMAIL: ${EMAIL_EMAIL}
+      EMAIL_PASS: ${EMAIL_PASS}
+      NEXT_PUBLIC_IMG_PROVIDER_URL: ${NEXT_PUBLIC_IMG_PROVIDER_URL}
+      BLOG_API: ${BLOG_API}
+      BLOG_TOKEN: ${BLOG_TOKEN}
+      SECRET_KEY: ${SECRET_KEY}
+    ports:
+      - 3030:3000
+    volumes:
+      - ./public:/app/public
+    networks:
+      - db-network
+
+networks:
+  db-network:
+    external: true
+    name: db-network
