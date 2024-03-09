@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "editors",
+  "info": {
+    "singularName": "editor",
+    "pluralName": "editors",
+    "displayName": "Editor"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "avatar": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "instagram": {
+      "type": "string"
+    }
+  }
+}
