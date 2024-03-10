@@ -7,6 +7,7 @@ export type Query = {
   filters: {
     $and?: (ITitle | ICategory | ITag | IType)[]
   }
+  sort: string[]
 }
 
 export type ITitle = {

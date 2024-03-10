@@ -58,7 +58,7 @@ export default async function PopularNews() {
               {item.attributes.author.data.attributes.name?.split(" ")[0]}
             </span>
           </p>
-          <h4 className="text-left line-clamp-4 font-bold">{item.attributes.title}</h4>
+          <h4 className="text-left line-clamp-4 font-bold text-base">{item.attributes.title}</h4>
         </Link>
       ))}
     </>

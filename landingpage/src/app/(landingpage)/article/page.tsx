@@ -109,6 +109,7 @@ async function fetchNews({
       filters: {
         $and: [],
       },
+      sort: ["publishedAt:desc"],
     }
 
     addQuery(query, { pCategory, pTags, pType, pTitle })
