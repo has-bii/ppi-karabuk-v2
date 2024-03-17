@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Form,
@@ -16,8 +16,10 @@ import { faCircleNotch } from "@fortawesome/free-solid-svg-icons"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useSupabaseClient } from "@/hook/supabase"
-import { useToast } from "@/context/ToastContext"
+import { useToast } from "../ui/use-toast"
+import useUserProfileUpdate from "@/hooks/user-profile/useUserProfileUpdate"
+import { useQueryClient } from "@tanstack/react-query"
+import { Profile } from "@/types/model"
 
 const formSchema = z.object({
   name: z.string().min(6, { message: "At least contains 6 characters!" }),
@@ -25,38 +27,44 @@ const formSchema = z.object({
 })
 
 type Props = {
-  userId: string
-  name: string
-  email: string
+  name: string | undefined | null
+  email: string | undefined
+  userId: string | undefined
 }
 
 export default function ChangeDetails({ name, email, userId }: Props) {
-  const supabase = useSupabaseClient()
-  const { pushToast } = useToast()
+  const queryClient = useQueryClient()
+  const updateProfile = useUserProfileUpdate()
+  const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: name,
+      name: name || "",
       email: email,
-    },
-    values: {
-      email,
-      name,
     },
   })
 
   const onSubmit = async (formData: z.infer<typeof formSchema>) => {
-    const { error } = await supabase
-      .from("user")
-      .update({ name: formData.name.toLowerCase() })
-      .eq("id", userId)
+    await updateProfile.mutateAsync(
+      { name: formData.name.toLowerCase(), id: userId, email: formData.email },
+      {
+        onSuccess: () => {
+          toast({ description: "Updated name successfully" })
 
-    if (error) pushToast(error.message, "error")
-    else pushToast("Changed name successfully", "success")
+          queryClient.setQueryData(["user-profile"], (prev: Profile) => ({
+            ...prev,
+            name: formData.name.toLowerCase(),
+          }))
+        },
+        onError: (error) => {
+          toast({ description: error.message, variant: "destructive" })
+        },
+      }
+    )
   }
 
   return (
-    <Card className="h-fit">
+    <Card className="w-full lg:w-fit">
       <CardHeader>
         <CardTitle>Edit Details</CardTitle>
         <CardDescription>
@@ -104,7 +112,7 @@ export default function ChangeDetails({ name, email, userId }: Props) {
             <Button
               type="submit"
               disabled={form.formState.isSubmitting}
-              className="inline-flex gap-2 items-center mt-2"
+              className="mt-2 inline-flex items-center gap-2"
             >
               {form.formState.isSubmitting ? (
                 <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" />

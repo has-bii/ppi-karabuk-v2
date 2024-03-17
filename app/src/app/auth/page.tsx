@@ -13,14 +13,14 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { useSupabaseClient } from "@/hook/supabase"
 import { useRouter } from "next/navigation"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons"
 import { z } from "zod"
 import { useToast } from "@/components/ui/use-toast"
+import useSupabaseClient from "@/lib/supabase/supabase-browser"
 
-export const LoginSchema = z.object({
+const LoginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6, "At least contains 6 characters"),
 })
@@ -38,8 +38,6 @@ export default function Page() {
   })
 
   const onSubmit = async (formData: z.infer<typeof LoginSchema>) => {
-    toast({ description: "Signing in..." })
-
     const { error } = await supabase.auth.signInWithPassword({ ...formData })
 
     if (error) {
@@ -58,7 +56,6 @@ export default function Page() {
       return
     }
 
-    toast({ description: "Authenticated" })
     router.refresh()
   }
 
@@ -103,6 +100,12 @@ export default function Page() {
               </FormItem>
             )}
           />
+          <span className="block text-left text-sm text-muted-foreground">
+            Forgot password?{" "}
+            <Link href={"/auth/forgot"} className="text-sm font-medium text-foreground underline">
+              Reset password
+            </Link>
+          </span>
           <Button
             type="submit"
             disabled={form.formState.isSubmitting}

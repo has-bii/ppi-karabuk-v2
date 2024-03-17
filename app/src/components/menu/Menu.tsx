@@ -1,6 +1,5 @@
 "use client"
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faGear,
   faGraduationCap,
@@ -8,6 +7,7 @@ import {
   faKey,
   faUserTie,
 } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useCallback } from "react"
@@ -16,7 +16,7 @@ export default function Menu() {
   const pathname = usePathname()
 
   const isActive = useCallback(
-    (path: string) => {
+    (path: string): string => {
       return (path !== "/" && pathname.startsWith(path)) || (path === "/" && pathname === path)
         ? "text-accent-foreground"
         : ""
@@ -25,9 +25,8 @@ export default function Menu() {
   )
 
   return (
-    <aside className="fixed bottom-0 left-0 w-full border-t bg-background text-foreground/50 lg:relative lg:w-fit lg:border-r lg:border-t-0">
-      <ul className="flex flex-row items-center justify-between gap-2 p-4 lg:flex-col lg:gap-4">
-        {/* Dashboard */}
+    <aside className="fixed bottom-0 left-0 w-full border-t bg-background/50 text-foreground/50 backdrop-blur-md md:relative md:w-fit md:border-r md:border-t-0">
+      <ul className="flex flex-row items-center justify-between gap-2 p-4 md:h-full md:flex-col md:justify-start md:gap-6">
         <li>
           <Link href="/">
             <FontAwesomeIcon
@@ -49,25 +48,25 @@ export default function Menu() {
         </li>
         {/* BPH */}
         <li>
-          <Link href="/admin">
+          <Link href="/bph">
             <FontAwesomeIcon
               icon={faUserTie}
               size="lg"
-              className={`hover:text-accent-foreground ${isActive("/admin")}`}
+              className={`hover:text-accent-foreground ${isActive("/bph")}`}
             />
           </Link>
         </li>
         {/* Super Admin */}
         <li>
-          <Link href="/super-admin">
+          <Link href="/admin">
             <FontAwesomeIcon
               icon={faKey}
               size="lg"
-              className={`hover:text-accent-foreground ${isActive("/super-admin")}`}
+              className={`hover:text-accent-foreground ${isActive("/admin")}`}
             />
           </Link>
         </li>
-        {/* Settings */}
+        {/* Setting */}
         <li>
           <Link href="/settings">
             <FontAwesomeIcon

@@ -48,7 +48,7 @@ enabled = true
 # Port to use for Supabase Studio.
 port = 54323
 # External URL of the API server that frontend connects to.
-api_url = "http://127.0.0.1"
+api_url = "http://localhost"
 
 # Email testing server. Emails sent with the local dev setup are not actually sent - rather, they
 # are monitored, and you can view the emails that would have been sent from the web interface.
@@ -97,6 +97,10 @@ enable_confirmations = true
 [auth.email.template.invite]
 subject = "You have been invited"
 content_path = "./supabase/templates/invite.html"
+
+[auth.email.template.recovery]
+subject = "Recovery account"
+content_path = "./supabase/templates/recovery.html"
 
 [auth.sms]
 # Allow/disallow new user signups via SMS to your project.

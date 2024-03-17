@@ -1,8 +1,6 @@
 "use client"
 
-import React, { FormEvent } from "react"
 import { Button } from "../ui/button"
-import { useSupabaseClient } from "@/hook/supabase"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -18,7 +16,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons"
-import { useToast } from "@/context/ToastContext"
+import { useToast } from "../ui/use-toast"
+import useSupabaseClient from "@/lib/supabase/supabase-browser"
 
 const formSchema = z
   .object({
@@ -32,7 +31,7 @@ const formSchema = z
 
 export default function ChangePassword() {
   const supabase = useSupabaseClient()
-  const { pushToast } = useToast()
+  const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,12 +43,12 @@ export default function ChangePassword() {
   const onSubmit = async (formData: z.infer<typeof formSchema>) => {
     const { error } = await supabase.auth.updateUser({ password: formData.new_password })
 
-    if (error) pushToast(error.message, "error")
-    else pushToast("Changed password successfully", "success")
+    if (error) toast({ variant: "destructive", description: error.message })
+    else toast({ description: "Changed password successfully" })
   }
 
   return (
-    <Card className="h-fit">
+    <Card className="w-full lg:w-fit">
       <CardHeader>
         <CardTitle>Change Password</CardTitle>
         <CardDescription>You must add your password if you were invited.</CardDescription>
@@ -86,7 +85,7 @@ export default function ChangePassword() {
             <Button
               type="submit"
               disabled={form.formState.isSubmitting}
-              className="inline-flex gap-2 items-center mt-2"
+              className="mt-2 inline-flex items-center gap-2"
             >
               {form.formState.isSubmitting ? (
                 <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" />

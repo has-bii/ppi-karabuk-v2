@@ -4,17 +4,9 @@ import React, { ChangeEvent, useCallback, useState } from "react"
 import dummypp from "@/assets/images/dummy-pp.png"
 import Image from "next/image"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import {
-  faCircleNotch,
-  faImage,
-  faPencil,
-  faTrashCan,
-  faUpload,
-} from "@fortawesome/free-solid-svg-icons"
-import { useToast } from "@/context/ToastContext"
+import { faCircleNotch, faImage, faTrashCan, faUpload } from "@fortawesome/free-solid-svg-icons"
 import createSupabaseClient from "@/lib/supabase/client"
 import generateFileName from "@/utils/generateFileName"
-import { getImageFromS3 } from "@/utils/S3"
 import {
   Dialog,
   DialogContent,
@@ -24,12 +16,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { useToast } from "@/components/ui/use-toast"
+import { Profile } from "@/types/model"
+import useUserProfileUpdate from "@/hooks/user-profile/useUserProfileUpdate"
+import { getImageFromS3 } from "@/utils/S3"
+import { useQueryClient } from "@tanstack/react-query"
 
 type Props = {
-  image: string | null
+  profile: Profile
 }
 
-export function ChangeImage({ image }: Props) {
+export function ChangeImage({ profile }: Props) {
+  const [isOpen, setOpen] = useState<boolean>(false)
   const [state, setState] = useState<"menu" | "change" | "remove">("menu")
 
   const changeToMenu = useCallback(() => {
@@ -42,12 +40,17 @@ export function ChangeImage({ image }: Props) {
     setState("remove")
   }, [])
 
+  const closeDialog = useCallback(() => {
+    setOpen(false)
+    setState("menu")
+  }, [])
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           variant={"ghost"}
-          className="inline-flex gap-2 items-center text-sky-400 justify-center w-full mt-2 font-semibold"
+          className="mt-2 inline-flex w-full items-center justify-center gap-2 font-semibold text-sky-400"
         >
           <FontAwesomeIcon icon={faImage} />
 
@@ -59,11 +62,25 @@ export function ChangeImage({ image }: Props) {
           <MenuState
             changeToChange={changeToChange}
             changeToRemove={changeToRemove}
-            image={image}
+            image={profile.image}
           />
         )}
-        {state === "change" && <ChangeState changeToMenu={changeToMenu} />}
-        {state === "remove" && <RemoveState changeToMenu={changeToMenu} />}
+        {state === "change" && (
+          <ChangeState
+            changeToMenu={changeToMenu}
+            id={profile.id}
+            image={profile.image}
+            closeDialog={closeDialog}
+          />
+        )}
+        {state === "remove" && (
+          <RemoveState
+            changeToMenu={changeToMenu}
+            id={profile.id}
+            image={profile.image}
+            closeDialog={closeDialog}
+          />
+        )}
       </DialogContent>
     </Dialog>
   )
@@ -72,7 +89,7 @@ export function ChangeImage({ image }: Props) {
 type MenuStateProps = {
   changeToChange: () => void
   changeToRemove: () => void
-  image: Props["image"]
+  image: Profile["image"]
 }
 
 export function MenuState({ image, changeToChange, changeToRemove }: MenuStateProps) {
@@ -83,7 +100,7 @@ export function MenuState({ image, changeToChange, changeToRemove }: MenuStatePr
         <DialogDescription>You can change or remove your profile image.</DialogDescription>
       </DialogHeader>
       <div>
-        <div className="relative w-full aspect-square rounded-md overflow-hidden bg-black">
+        <div className="relative aspect-square w-full overflow-hidden rounded-md bg-[#1D1D1D]">
           <Image
             alt=""
             src={image ? getImageFromS3(image, "profiles") : dummypp}
@@ -94,15 +111,15 @@ export function MenuState({ image, changeToChange, changeToRemove }: MenuStatePr
             className="object-cover"
           />
         </div>
-        <div className="inline-flex gap-2 items-center mt-4 w-full">
+        <div className="mt-4 inline-flex w-full items-center gap-2">
           <Button
-            className="bg-foreground text-accent border font-semibold w-full"
+            className="w-full border bg-foreground font-semibold text-accent"
             onClick={changeToChange}
           >
             Change
           </Button>
           <Button
-            className="bg-foreground text-accent border font-semibold w-full inline-flex gap-2 items-center disabled:bg-accent-foreground"
+            className="inline-flex w-full items-center gap-2 border bg-foreground font-semibold text-accent disabled:bg-accent-foreground"
             disabled={image === null}
             onClick={changeToRemove}
           >
@@ -117,13 +134,18 @@ export function MenuState({ image, changeToChange, changeToRemove }: MenuStatePr
 
 type ChangeStateProps = {
   changeToMenu: () => void
+  closeDialog: () => void
+  id: Profile["id"]
+  image: Profile["image"]
 }
 
-export function ChangeState({ changeToMenu }: ChangeStateProps) {
+export function ChangeState({ changeToMenu, id: userId, image, closeDialog }: ChangeStateProps) {
+  const updateUserProfile = useUserProfileUpdate()
+  const queryClient = useQueryClient()
   const [file, setFile] = useState<{ file: File; src: string } | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const supabase = createSupabaseClient()
-  const { pushToast } = useToast()
+  const { toast } = useToast()
 
   const uploadFileHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.item(0) === null || e.target.files === null) {
@@ -133,13 +155,13 @@ export function ChangeState({ changeToMenu }: ChangeStateProps) {
     const file = e.target.files.item(0) as File
 
     if (file.size > 2 * 1024 * 1024) {
-      pushToast("Max size is 2MB", "danger")
+      toast({ description: "Max size is 2MB", variant: "destructive" })
       setFile(null)
       return
     }
 
     if (!["image/jpeg", "image/png", "image/jpg", "application/pdf"].includes(file.type)) {
-      pushToast("Invalid file type!", "danger")
+      toast({ variant: "destructive", description: "Invalid file type!" })
       setFile(null)
       return
     }
@@ -149,38 +171,42 @@ export function ChangeState({ changeToMenu }: ChangeStateProps) {
   }, [])
 
   const updateHandler = async () => {
-    const res = await supabase.from("user").select(`id,image`).single()
-
-    if (res.error) return
-
     if (!file) return
 
-    pushToast("Changing profile image...", "normal")
     setLoading(true)
 
     const { data, error } = await supabase.storage
       .from("profiles")
-      .upload(`${res.data.id}/${generateFileName(file.file.name)}`, file.file)
+      .upload(`${userId}/${generateFileName(file.file.name)}`, file.file)
 
     if (error) {
-      pushToast(error.message, "error")
+      toast({ variant: "destructive", description: error.message })
       setLoading(false)
       return
     }
 
-    const updateRes = await supabase.from("user").update({ image: data.path }).eq("id", res.data.id)
+    await updateUserProfile.mutateAsync(
+      { image: data.path, id: userId },
+      {
+        onError(error) {
+          toast({ variant: "destructive", description: error.message })
+        },
+        onSuccess: async () => {
+          if (image) await supabase.storage.from("profiles").remove([image])
 
-    if (updateRes.error) {
-      pushToast(updateRes.error.message, "error")
-      setLoading(false)
-      return
-    }
+          toast({ description: "Changed image successfully" })
 
-    if (res.data.image) await supabase.storage.from("profiles").remove([res.data.image])
+          queryClient.setQueryData(["user-profile"], (prev: Profile) => ({
+            ...prev,
+            image: data.path,
+          }))
+        },
+      }
+    )
 
     setLoading(false)
 
-    window.location.reload()
+    closeDialog()
   }
 
   return (
@@ -189,7 +215,7 @@ export function ChangeState({ changeToMenu }: ChangeStateProps) {
         <DialogTitle>Changing Image</DialogTitle>
       </DialogHeader>
       <div>
-        <div className="relative w-full flex justify-center items-center aspect-square rounded-md overflow-hidden">
+        <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-md">
           {file !== null ? (
             <Image
               alt=""
@@ -201,11 +227,11 @@ export function ChangeState({ changeToMenu }: ChangeStateProps) {
               className="object-cover"
             />
           ) : (
-            <div className="text-muted-foreground flex flex-col justify-center items-center gap-1">
+            <div className="flex flex-col items-center justify-center gap-1 text-muted-foreground">
               <FontAwesomeIcon icon={faUpload} size="5x" className="text-default-200" />
-              <span className="font-light text-sm mt-2">File format: JPG / JPEG / PNG</span>
+              <span className="mt-2 text-sm font-light">File format: JPG / JPEG / PNG</span>
               <div className="inline-flex text-foreground">
-                <label className="underline hover:cursor-pointer font-semibold">
+                <label className="font-semibold underline hover:cursor-pointer">
                   Click to upload
                   <input
                     type="file"
@@ -216,14 +242,14 @@ export function ChangeState({ changeToMenu }: ChangeStateProps) {
                 </label>
                 &nbsp;profile image.
               </div>
-              <span className="font-light text-sm">Max file size: 2 MB</span>
+              <span className="text-sm font-light">Max file size: 2 MB</span>
             </div>
           )}
         </div>
-        <div className="inline-flex gap-2 items-center mt-4 w-full">
+        <div className="mt-4 inline-flex w-full items-center gap-2">
           {file !== null && (
             <Button
-              className="bg-foreground text-accent border font-semibold w-full inline-flex gap-2 items-center disabled:bg-accent-foreground"
+              className="inline-flex w-full items-center gap-2 border bg-foreground font-semibold text-accent disabled:bg-accent-foreground"
               onClick={updateHandler}
             >
               {loading && <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" />}
@@ -231,7 +257,7 @@ export function ChangeState({ changeToMenu }: ChangeStateProps) {
             </Button>
           )}
           <Button
-            className="bg-foreground text-accent border font-semibold w-full inline-flex gap-2 items-center disabled:bg-accent-foreground"
+            className="inline-flex w-full items-center gap-2 border bg-foreground font-semibold text-accent disabled:bg-accent-foreground"
             onClick={changeToMenu}
           >
             Back
@@ -242,41 +268,40 @@ export function ChangeState({ changeToMenu }: ChangeStateProps) {
   )
 }
 
-export function RemoveState({ changeToMenu }: ChangeStateProps) {
+export function RemoveState({ changeToMenu, id: userId, image, closeDialog }: ChangeStateProps) {
+  const queryClient = useQueryClient()
   const [loading, setLoading] = useState<boolean>(false)
+  const updateUserProfile = useUserProfileUpdate()
   const supabase = createSupabaseClient()
-  const { pushToast } = useToast()
+  const { toast } = useToast()
 
-  const removeImageHandler = useCallback(async () => {
+  const removeImageHandler = async () => {
     setLoading(true)
-    const { data } = await supabase.from("user").select(`id,image`).single()
 
-    if (!data) {
-      pushToast("Internal server error!", "error")
-      setLoading(false)
-      return
-    }
-
-    const updateRes = await supabase.from("user").update({ image: null }).eq("id", data.id)
-
-    if (updateRes.error) {
-      pushToast("Failed to remove image!", "error")
-      setLoading(false)
-      return
-    }
-
-    const { error } = await supabase.storage.from("profiles").remove([data.image!])
+    const { error } = await supabase.storage.from("profiles").remove([image!])
 
     if (error) {
-      pushToast(error.message, "error")
+      toast({ description: error.message, variant: "destructive" })
       setLoading(false)
       return
     }
 
-    pushToast("Profile image has been removed", "success")
-    window.location.reload()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    await updateUserProfile.mutateAsync(
+      { image: null, id: userId },
+      {
+        onSuccess: () => {
+          toast({ description: "Removed image successfully" })
+          queryClient.setQueryData(["user-profile"], (prev: Profile) => ({ ...prev, image: null }))
+        },
+        onError(error) {
+          toast({ variant: "destructive", description: error.message })
+        },
+      }
+    )
+
+    setLoading(false)
+    closeDialog()
+  }
 
   return (
     <>
@@ -286,7 +311,7 @@ export function RemoveState({ changeToMenu }: ChangeStateProps) {
       <div>
         <div className="flex flex-col items-center">
           {/* Image */}
-          <div className="relative rounded-full overflow-hidden aspect-square w-48 mb-4 opacity-25 dark:border-8 dark:border-white">
+          <div className="relative mb-4 aspect-square w-48 overflow-hidden rounded-full opacity-25 dark:border-8 dark:border-white">
             <Image
               src={dummypp}
               className="object-cover"
@@ -298,22 +323,22 @@ export function RemoveState({ changeToMenu }: ChangeStateProps) {
             />
           </div>
 
-          <div className="text-center text-2xl font-semibold mb-0 text-foreground    ">
+          <div className="mb-0 text-center text-2xl font-semibold text-foreground    ">
             Remove profile picture?
           </div>
-          <div className="text-center text-muted-foreground mb-4">
+          <div className="mb-4 text-center text-muted-foreground">
             Your previous picture will be removed,
             <br /> and this image will be used instead.
           </div>
-          <div className="inline-flex gap-2 items-center w-full mt-4">
+          <div className="mt-4 inline-flex w-full items-center gap-2">
             <Button
-              className="bg-foreground text-accent border font-semibold w-full inline-flex gap-2 items-center disabled:bg-accent-foreground"
+              className="inline-flex w-full items-center gap-2 border bg-foreground font-semibold text-accent disabled:bg-accent-foreground"
               onClick={changeToMenu}
             >
               Cancel
             </Button>
             <Button
-              className="bg-red-400 text-white border font-semibold w-full inline-flex gap-2 items-center"
+              className="inline-flex w-full items-center gap-2 border bg-red-400 font-semibold text-white"
               onClick={removeImageHandler}
               disabled={loading}
             >

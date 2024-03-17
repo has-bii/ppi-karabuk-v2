@@ -13,14 +13,14 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { useSupabaseClient } from "@/hook/supabase"
 import { useRouter } from "next/navigation"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons"
 import { useToast } from "@/components/ui/use-toast"
 import { z } from "zod"
+import useSupabaseClient from "@/lib/supabase/supabase-browser"
 
-export const RegisterSchema = z.object({
+const RegisterSchema = z.object({
   name: z.string().min(6, "At least contains 6 characters"),
   email: z.string().email(),
   password: z.string().min(6, "At least contains 6 characters"),
@@ -53,7 +53,7 @@ export default function Page() {
       return
     }
 
-    toast({ description: "Signed up successfully." })
+    toast({ description: "Signed up successfully. Please check your email!" })
     router.push("/auth")
   }
 
@@ -111,6 +111,12 @@ export default function Page() {
               </FormItem>
             )}
           />
+          <span className="block text-left text-sm text-muted-foreground">
+            Forgot password?{" "}
+            <Link href={"/auth/forgot"} className="text-sm font-medium text-foreground underline">
+              Reset password
+            </Link>
+          </span>
           <Button
             type="submit"
             disabled={form.formState.isSubmitting}

@@ -1,4 +1,5 @@
 @import "./scroll.css";
+@import "./typography.css";
 
 @tailwind base;
 @tailwind components;

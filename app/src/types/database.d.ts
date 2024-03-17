@@ -9,6 +9,111 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      division: {
+        Row: {
+          created_at: string
+          id: string
+          kabinet_id: string
+          name: string | null
+          type: Database["public"]["Enums"]["DivisionType"]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kabinet_id: string
+          name?: string | null
+          type: Database["public"]["Enums"]["DivisionType"]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kabinet_id?: string
+          name?: string | null
+          type?: Database["public"]["Enums"]["DivisionType"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_division_kabinet_id_fkey"
+            columns: ["kabinet_id"]
+            isOneToOne: false
+            referencedRelation: "kabinet"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      division_user: {
+        Row: {
+          created_at: string
+          division_id: string
+          division_user_type: Database["public"]["Enums"]["DivisionUserType"]
+          id: string
+          kabinet_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          division_id: string
+          division_user_type?: Database["public"]["Enums"]["DivisionUserType"]
+          id?: string
+          kabinet_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          division_id?: string
+          division_user_type?: Database["public"]["Enums"]["DivisionUserType"]
+          id?: string
+          kabinet_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_division_user_division_id_fkey"
+            columns: ["division_id"]
+            isOneToOne: false
+            referencedRelation: "division"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_division_user_kabinet_id_fkey"
+            columns: ["kabinet_id"]
+            isOneToOne: false
+            referencedRelation: "kabinet"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_division_user_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kabinet: {
+        Row: {
+          created_at: string
+          end_date: string
+          id: string
+          name: string
+          start_date: string
+        }
+        Insert: {
+          created_at?: string
+          end_date: string
+          id?: string
+          name: string
+          start_date?: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string
+          id?: string
+          name?: string
+          start_date?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -41,6 +146,21 @@ export type Database = {
           },
         ]
       }
+      settings: {
+        Row: {
+          setting: Database["public"]["Enums"]["Settings"]
+          value: Json
+        }
+        Insert: {
+          setting: Database["public"]["Enums"]["Settings"]
+          value: Json
+        }
+        Update: {
+          setting?: Database["public"]["Enums"]["Settings"]
+          value?: Json
+        }
+        Relationships: []
+      }
       user_role: {
         Row: {
           role: Database["public"]["Enums"]["Role"][] | null
@@ -72,7 +192,10 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      Role: "SUPER_ADMIN" | "STUDENT"
+      DivisionType: "ketua" | "sekretaris" | "bendahara" | "MPA" | "divisi"
+      DivisionUserType: "ketua" | "anggota"
+      Role: "ADMIN" | "BPH" | "STUDENT"
+      Settings: "signup_is_enabled" | "signup_default_role"
     }
     CompositeTypes: {
       [_ in never]: never

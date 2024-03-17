@@ -14,18 +14,13 @@ export const metadata: Metadata = {
 
 export default function AuthLayout({ children }: Props) {
   return (
-    <main className="w-screen flex flex-row h-dvh justify-center items-center bg-background">
-      {/* <section className="min-w-full lg:min-w-[40rem] h-full flex flex-col justify-center items-center">
-        <Topnav />
-        {children}
-      </section> */}
-
-      <section className="min-w-full lg:min-w-[40rem] h-full flex flex-col justify-center items-center p-4 lg:p-24">
+    <main className="flex h-dvh w-screen flex-row items-center justify-center bg-background">
+      <section className="flex h-full min-w-full flex-col items-center justify-center p-4 lg:min-w-[40rem] lg:p-24">
         <Topnav />
         <div className="my-auto">{children}</div>
       </section>
 
-      <div className="flex-1 relative overflow-hidden h-full hidden lg:block">
+      <div className="relative hidden h-full flex-1 overflow-hidden lg:block">
         <Image
           alt=""
           src={authimage}

@@ -1,0 +1,23 @@
+@import "./globals.css";
+
+@layer base {
+  h1.heading-1 {
+    @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
+  }
+
+  h2.heading-2 {
+    @apply scroll-m-20 text-3xl font-semibold tracking-tight first:mt-0;
+  }
+
+  h3.heading-3 {
+    @apply scroll-m-20 text-2xl font-semibold tracking-tight;
+  }
+
+  h4.heading-4 {
+    @apply scroll-m-20 text-xl font-semibold tracking-tight;
+  }
+
+  p.paragraph {
+    @apply leading-7 [&:not(:first-child)]:mt-6;
+  }
+}

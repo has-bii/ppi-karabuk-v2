@@ -1,11 +1,11 @@
 import { config } from "@fortawesome/fontawesome-svg-core"
 import "@fortawesome/fontawesome-svg-core/styles.css"
-import { Providers } from "@/provider/Providers"
 import { Inter as FontSans } from "next/font/google"
-import type { Metadata } from "next"
-import "../styles/globals.css"
-import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
+import { Providers } from "@/provider/Providers"
+import type { Metadata } from "next"
+import { cn } from "@/lib/utils"
+import "../styles/globals.css"
 config.autoAddCss = false
 
 export const fontSans = FontSans({

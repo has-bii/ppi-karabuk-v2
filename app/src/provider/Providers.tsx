@@ -1,13 +1,17 @@
 // app/providers.tsx
 "use client"
 
-import { ToastProvider } from "./ToastProvider"
+import { ReactQueryClientProvider } from "@/provider/ReactQueryClientProvider"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { ThemeProvider } from "./theme-provider"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <ToastProvider>{children}</ToastProvider>
-    </ThemeProvider>
+    <ReactQueryClientProvider>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        {children}
+      </ThemeProvider>
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-left" />
+    </ReactQueryClientProvider>
   )
 }
