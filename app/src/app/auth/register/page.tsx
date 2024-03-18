@@ -19,6 +19,7 @@ import { faCircleNotch } from "@fortawesome/free-solid-svg-icons"
 import { useToast } from "@/components/ui/use-toast"
 import { z } from "zod"
 import useSupabaseClient from "@/lib/supabase/supabase-browser"
+import { Response } from "@/types/response"
 
 const RegisterSchema = z.object({
   name: z.string().min(6, "At least contains 6 characters"),
@@ -42,19 +43,22 @@ export default function Page() {
   const onSubmit = async (formData: z.infer<typeof RegisterSchema>) => {
     toast({ description: "Signing up..." })
 
-    const { error } = await supabase.auth.signUp({
-      email: formData.email.toLowerCase(),
-      password: formData.password,
-      options: { data: { name: formData.name.toLowerCase() } },
+    const res = await fetch("/auth/api/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ...formData }),
     })
 
-    if (error) {
-      toast({ description: error.message, title: "Failed to sign up", variant: "destructive" })
-      return
-    }
+    const data = (await res.json()) as Response
 
-    toast({ description: "Signed up successfully. Please check your email!" })
-    router.push("/auth")
+    toast({
+      description: data.message,
+      variant: data.status === "error" ? "destructive" : "default",
+    })
+
+    if (data.status === "success") router.push("/auth")
   }
 
   return (

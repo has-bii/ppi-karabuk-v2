@@ -3,6 +3,7 @@
 import { createSupabaseServiceRole } from "@/lib/supabase/server"
 import { Role } from "@/types/enum"
 import { Response } from "@/types/response"
+import { revalidatePath } from "next/cache"
 
 type InvitesUsersInputs = {
   name: string
@@ -28,6 +29,8 @@ export async function actionInvitesUsers({
       .eq("user_id", data.user.id)
 
     if (error1) return { status: "error", message: error1.message }
+
+    revalidatePath("/admin/manage-user")
 
     return { status: "success", message: "User has been invited" }
   } catch (error) {
