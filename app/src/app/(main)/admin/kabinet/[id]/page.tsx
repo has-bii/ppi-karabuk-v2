@@ -17,7 +17,7 @@ import getUsers from "@/queries/users/getUsers"
 
 export const fetchCache = "force-cache"
 export const dynamicParams = true
-export const revalidate = false
+export const revalidate = 3600
 
 export default async function Page({ params: { id } }: { params: { id: string } }) {
   const supabase = createSupabaseServiceRole()

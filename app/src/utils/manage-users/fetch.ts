@@ -12,7 +12,7 @@ type Response =
       error: string
     }
 
-export default unstable_cache(
+const getAllUsers = unstable_cache(
   async (): Promise<Response> => {
     const supabase = createSupabaseServiceRole()
 
@@ -42,3 +42,5 @@ export default unstable_cache(
   ["all-users"],
   { tags: ["all-users"], revalidate: 3600 }
 )
+
+export default getAllUsers
