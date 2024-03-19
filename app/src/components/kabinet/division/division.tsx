@@ -36,8 +36,7 @@ type Props = {
 type DivisionType = Database["public"]["Enums"]["DivisionType"]
 
 export default function Division({ kabinetId }: Props) {
-  const supabase = useSupabaseClient()
-  const { data } = useKabinetByIdQuery(supabase, kabinetId)
+  const { data } = useKabinetByIdQuery(kabinetId)
   const queryClient = useQueryClient()
   const { toast } = useToast()
 

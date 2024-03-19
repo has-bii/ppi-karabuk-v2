@@ -7,28 +7,26 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import createSupabaseServer, { createSupabaseServiceRole } from "@/lib/supabase/server"
 import Link from "next/link"
-import getKabinetById from "@/queries/kabinet/getKabinetById"
+import { getKabinetById } from "@/queries/kabinet/getKabinetById"
 import KabinetEdit from "@/components/kabinet/edit-kabinet"
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query"
 import AnggotaDivisi from "@/components/kabinet/division/anggota-divisi"
-import getUsers from "@/queries/users/getUsers"
+import { getProfilesCached } from "@/queries/profile/getProfilesCached"
 
 export const fetchCache = "force-cache"
 export const dynamicParams = true
 export const revalidate = 3600
 
 export default async function Page({ params: { id } }: { params: { id: string } }) {
-  const supabase = createSupabaseServiceRole()
   const queryClient = new QueryClient()
 
-  const { data } = await getKabinetById(supabase, id)
+  const { data } = await getKabinetById(id)
 
   await queryClient.prefetchQuery({
     queryKey: ["kabinet", id],
     queryFn: async () => {
-      const { data, error } = await getKabinetById(supabase, id)
+      const { data, error } = await getKabinetById(id)
 
       if (error) throw new Error(error.message)
 
@@ -38,14 +36,8 @@ export default async function Page({ params: { id } }: { params: { id: string } 
   })
 
   await queryClient.prefetchQuery({
-    queryKey: ["users"],
-    queryFn: async () => {
-      const { data, error } = await getUsers()
-
-      if (error) throw new Error(error.message)
-
-      return data
-    },
+    queryKey: ["all-profiles"],
+    queryFn: async () => (await getProfilesCached()).data,
   })
 
   if (data)

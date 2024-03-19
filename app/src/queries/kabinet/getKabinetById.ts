@@ -1,6 +1,8 @@
-import { TypedSupabaseClient } from "@/lib/supabase/types"
+"use server"
+
+import { createSupabaseServiceRole } from "@/lib/supabase/server"
 import { Database } from "@/types/database"
-import { PostgrestBuilder } from "@supabase/postgrest-js"
+import { revalidatePath } from "next/cache"
 
 export type KabinetByID = Database["public"]["Tables"]["kabinet"]["Row"] & {
   division: (Database["public"]["Tables"]["division"]["Row"] & {
@@ -19,11 +21,8 @@ export type KabinetByID = Database["public"]["Tables"]["kabinet"]["Row"] & {
   })[]
 }
 
-export default function getKabinetById(
-  supabase: TypedSupabaseClient,
-  id: string
-): PostgrestBuilder<KabinetByID> {
-  return supabase
+const getKabinetById = async (id: string) => {
+  return createSupabaseServiceRole()
     .from("kabinet")
     .select(
       `*,
@@ -49,3 +48,35 @@ export default function getKabinetById(
     .throwOnError()
     .single()
 }
+
+const getKabinetByIdUncached = async (id: string) => {
+  revalidatePath("/admin/kabinet/" + id, "page")
+
+  return createSupabaseServiceRole()
+    .from("kabinet")
+    .select(
+      `*,
+      division_user(
+        *,
+        division(
+          name,
+          type
+        ),
+        profiles(
+          name,
+          image
+        )
+      ),
+      division(
+        *,
+        division_user(
+          *
+        )
+      )`
+    )
+    .eq("id", id)
+    .throwOnError()
+    .single()
+}
+
+export { getKabinetByIdUncached, getKabinetById }

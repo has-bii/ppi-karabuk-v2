@@ -1,16 +1,10 @@
-import getUsers from "@/queries/users/getUsers"
+import { getProfiles } from "@/queries/profile/getProfilesCached"
 import { useQuery } from "@tanstack/react-query"
 
 export default function useUsersQuery() {
-  const queryKey = ["users"]
+  const queryKey = ["all-profiles"]
 
-  const queryFn = async () => {
-    const { data, error } = await getUsers()
-
-    if (error) throw new Error(error.message)
-
-    return data
-  }
+  const queryFn = async () => (await getProfiles()).data
 
   return useQuery({ queryKey, queryFn })
 }

@@ -40,7 +40,9 @@ const getAllUsers = unstable_cache(
     return { data: mapped as Profile[], error: null }
   },
   ["all-users"],
-  { tags: ["all-users"], revalidate: 3600 }
+  {
+    tags: ["all-users"],
+  }
 )
 
 export default getAllUsers

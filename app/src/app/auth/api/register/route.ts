@@ -29,9 +29,8 @@ export async function POST(request: Request) {
 
     if (error) return Response.json({ status: "error", message: error.message })
 
-    revalidatePath("/admin/manage-user")
-    revalidatePath("/(main)/admin/kabinet/[id]", "page")
     revalidateTag("all-users")
+    revalidateTag("all-profiles")
 
     const { error: error1 } = await supabase
       .from("user_role")

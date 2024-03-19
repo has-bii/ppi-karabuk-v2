@@ -1,6 +1,5 @@
 "use client"
 
-import useKabinetQuery from "@/hooks/kabinet/useKabinetQuery"
 import { DataTable } from "@/components/ui/data-table"
 import { ColumnDef } from "@tanstack/react-table"
 import { Database } from "@/types/database"
@@ -17,6 +16,8 @@ import { Button } from "@/components/ui/button"
 import getDate from "@/utils/getDate"
 import { useRouter } from "next/navigation"
 import { SkeletonTable } from "@/components/skeleton/SkeletonTable"
+import { useQuery } from "@tanstack/react-query"
+import getAllKabinet from "@/queries/kabinet/getAllKabinet"
 
 type Kabinet = Database["public"]["Tables"]["kabinet"]["Row"]
 
@@ -26,7 +27,11 @@ type Props = {
 }
 
 export default function TableKabinet({ path, initialData }: Props) {
-  const { data, isLoading, error } = useKabinetQuery(initialData)
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["kabinet"],
+    queryFn: async () => (await getAllKabinet()).data,
+    initialData,
+  })
   const router = useRouter()
 
   const columns: ColumnDef<Kabinet>[] = useMemo(

@@ -1,5 +1,5 @@
 import ManageUsers from "@/components/manage-users/manage-users"
-import getAllUsers from "@/utils/manage-users/fetch"
+import getAllUsers from "@/utils/manage-users/getAllUsers"
 
 export const fetchCache = "force-cache"
 

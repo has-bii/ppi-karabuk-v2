@@ -18,9 +18,9 @@ import {
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 import { Profile } from "@/types/model"
-import useUserProfileUpdate from "@/hooks/user-profile/useUserProfileUpdate"
 import { getImageFromS3 } from "@/utils/S3"
 import { useQueryClient } from "@tanstack/react-query"
+import { updateUserProfile } from "@/utils/user-profile/updateUserProfile"
 
 type Props = {
   profile: Profile
@@ -140,7 +140,6 @@ type ChangeStateProps = {
 }
 
 export function ChangeState({ changeToMenu, id: userId, image, closeDialog }: ChangeStateProps) {
-  const updateUserProfile = useUserProfileUpdate()
   const queryClient = useQueryClient()
   const [file, setFile] = useState<{ file: File; src: string } | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
@@ -185,24 +184,18 @@ export function ChangeState({ changeToMenu, id: userId, image, closeDialog }: Ch
       return
     }
 
-    await updateUserProfile.mutateAsync(
-      { image: data.path, id: userId },
-      {
-        onError(error) {
-          toast({ variant: "destructive", description: error.message })
-        },
-        onSuccess: async () => {
-          if (image) await supabase.storage.from("profiles").remove([image])
+    const { message, status } = await updateUserProfile(userId, { image: data.path })
 
-          toast({ description: "Changed image successfully" })
+    toast({ description: message, variant: status === "error" ? "destructive" : "default" })
 
-          queryClient.setQueryData(["user-profile"], (prev: Profile) => ({
-            ...prev,
-            image: data.path,
-          }))
-        },
-      }
-    )
+    if (status === "success") {
+      if (image) await supabase.storage.from("profiles").remove([image])
+
+      queryClient.setQueryData(["user-profile"], (prev: Profile) => ({
+        ...prev,
+        image: data.path,
+      }))
+    } else await supabase.storage.from("profiles").remove([data.path])
 
     setLoading(false)
 
@@ -271,7 +264,6 @@ export function ChangeState({ changeToMenu, id: userId, image, closeDialog }: Ch
 export function RemoveState({ changeToMenu, id: userId, image, closeDialog }: ChangeStateProps) {
   const queryClient = useQueryClient()
   const [loading, setLoading] = useState<boolean>(false)
-  const updateUserProfile = useUserProfileUpdate()
   const supabase = createSupabaseClient()
   const { toast } = useToast()
 
@@ -286,18 +278,12 @@ export function RemoveState({ changeToMenu, id: userId, image, closeDialog }: Ch
       return
     }
 
-    await updateUserProfile.mutateAsync(
-      { image: null, id: userId },
-      {
-        onSuccess: () => {
-          toast({ description: "Removed image successfully" })
-          queryClient.setQueryData(["user-profile"], (prev: Profile) => ({ ...prev, image: null }))
-        },
-        onError(error) {
-          toast({ variant: "destructive", description: error.message })
-        },
-      }
-    )
+    const { message, status } = await updateUserProfile(userId, { image: null })
+
+    toast({ description: message, variant: status === "error" ? "destructive" : "default" })
+
+    if (status === "success")
+      queryClient.setQueryData(["user-profile"], (prev: Profile) => ({ ...prev, image: null }))
 
     setLoading(false)
     closeDialog()

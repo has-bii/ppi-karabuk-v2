@@ -47,9 +47,7 @@ const formSchema = z.object({
   email: z.string().email({ message: "Invalid email!" }),
 })
 
-type Props = {}
-
-export default function InviteUsers({}: Props) {
+export default function InviteUsers() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -73,6 +71,7 @@ export default function InviteUsers({}: Props) {
       description: res.message,
     })
 
+    if (res.status === "success") form.reset()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

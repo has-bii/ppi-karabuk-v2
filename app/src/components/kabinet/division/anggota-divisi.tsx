@@ -1,7 +1,6 @@
 "use client"
 
 import useKabinetByIdQuery from "@/hooks/kabinet/byId/useKabinetByIdQuery"
-import useSupabaseClient from "@/lib/supabase/supabase-browser"
 import { KabinetByID } from "@/queries/kabinet/getKabinetById"
 import { DataTable } from "@/components/ui/data-table"
 import dummypp from "@/assets/images/dummy-pp.png"
@@ -12,7 +11,7 @@ import { useCallback, useMemo, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCircleNotch, faTrashCan } from "@fortawesome/free-solid-svg-icons"
+import { faArrowsRotate, faCircleNotch, faTrashCan } from "@fortawesome/free-solid-svg-icons"
 import deleteAnggotaDivisi from "@/utils/kabinet/anggota-divisi/delete-anggota"
 import { useToast } from "@/components/ui/use-toast"
 import { useQueryClient } from "@tanstack/react-query"
@@ -60,11 +59,10 @@ const formSchema = z
 
 export default function AnggotaDivisi({ kabinetId }: Props) {
   const [isOpen, setOpen] = useState<boolean>(false)
-  const supabase = useSupabaseClient()
   const { toast } = useToast()
   const queryClient = useQueryClient()
-  const { data } = useKabinetByIdQuery(supabase, kabinetId)
-  const { data: users } = useUsersQuery()
+  const { data, refetch: refetchK, isRefetching: isRefetchingK } = useKabinetByIdQuery(kabinetId)
+  const { data: users, refetch, isRefetching } = useUsersQuery()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -122,7 +120,9 @@ export default function AnggotaDivisi({ kabinetId }: Props) {
         id: "divisi",
         accessorKey: "division",
         header: () => <span className="ml-3">Divisi</span>,
-        cell: ({ row }) => <span className="ml-3">{row.original.division?.name}</span>,
+        cell: ({ row }) => (
+          <span className="ml-3 whitespace-nowrap">{row.original.division?.name}</span>
+        ),
       },
       {
         id: "posisi",
@@ -210,14 +210,14 @@ export default function AnggotaDivisi({ kabinetId }: Props) {
   if (data)
     return (
       <div className="w-full space-y-4 lg:space-y-2">
-        <div className="inline-flex w-full">
+        <div className="inline-flex w-full gap-2">
           <Dialog open={isOpen} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button size="sm" className="ml-auto">
                 Tambah Anggota
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent>
               <DialogHeader>
                 <DialogTitle className="text-left">Tambah Anggota</DialogTitle>
                 <DialogDescription className="text-left">
@@ -233,8 +233,8 @@ export default function AnggotaDivisi({ kabinetId }: Props) {
                     render={({ field }) => (
                       <FormItem>
                         <div className="grid grid-cols-4 items-center gap-4">
-                          <FormLabel className="text-right">Anggota</FormLabel>
-                          <div className="col-span-3">
+                          <FormLabel className="text-left">Anggota</FormLabel>
+                          <div className="col-span-3 inline-flex items-center gap-2">
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger>
@@ -249,6 +249,18 @@ export default function AnggotaDivisi({ kabinetId }: Props) {
                                 ))}
                               </SelectContent>
                             </Select>
+
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => refetch()}
+                              type="button"
+                            >
+                              <FontAwesomeIcon
+                                icon={faArrowsRotate}
+                                className={isRefetching ? "animate-spin" : ""}
+                              />
+                            </Button>
                           </div>
                         </div>
                         <FormMessage />
@@ -262,7 +274,7 @@ export default function AnggotaDivisi({ kabinetId }: Props) {
                     render={({ field }) => (
                       <FormItem>
                         <div className="grid grid-cols-4 items-center gap-4">
-                          <FormLabel className="text-right">Divisi</FormLabel>
+                          <FormLabel className="text-left">Divisi</FormLabel>
                           <div className="col-span-3">
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
@@ -291,7 +303,7 @@ export default function AnggotaDivisi({ kabinetId }: Props) {
                     render={({ field }) => (
                       <FormItem>
                         <div className="grid grid-cols-4 items-center gap-4">
-                          <FormLabel className="text-right">Posisi</FormLabel>
+                          <FormLabel className="text-left">Posisi</FormLabel>
                           <div className="col-span-3">
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
@@ -326,6 +338,12 @@ export default function AnggotaDivisi({ kabinetId }: Props) {
               </Form>
             </DialogContent>
           </Dialog>
+          <Button variant="outline" size="sm" onClick={() => refetchK()} type="button">
+            <FontAwesomeIcon
+              icon={faArrowsRotate}
+              className={isRefetchingK ? "animate-spin" : ""}
+            />
+          </Button>
         </div>
         <DataTable
           columns={columns}

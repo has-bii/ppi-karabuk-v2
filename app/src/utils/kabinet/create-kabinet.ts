@@ -4,7 +4,7 @@ import { createSupabaseServiceRole } from "@/lib/supabase/server"
 import { ResponseWithData } from "@/types/response"
 import getUserRole from "../getUserRole"
 import { Database } from "@/types/database"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 
 type Params = {
   name: string
@@ -38,6 +38,7 @@ export default async function createKabinet({
     }
 
     revalidatePath(`/admin/kabinet/${data.id}`)
+    revalidateTag("all-kabinet")
 
     return { status: "success", message: "Created new kabinet successfully", data }
   } catch (error) {

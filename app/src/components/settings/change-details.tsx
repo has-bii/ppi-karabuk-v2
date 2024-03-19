@@ -1,4 +1,3 @@
-import React, { useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Form,
@@ -16,10 +15,11 @@ import { faCircleNotch } from "@fortawesome/free-solid-svg-icons"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useToast } from "../ui/use-toast"
-import useUserProfileUpdate from "@/hooks/user-profile/useUserProfileUpdate"
+import { useToast } from "@/components/ui/use-toast"
 import { useQueryClient } from "@tanstack/react-query"
 import { Profile } from "@/types/model"
+import { updateUserProfile } from "@/utils/user-profile/updateUserProfile"
+import { useCallback } from "react"
 
 const formSchema = z.object({
   name: z.string().min(6, { message: "At least contains 6 characters!" }),
@@ -34,7 +34,6 @@ type Props = {
 
 export default function ChangeDetails({ name, email, userId }: Props) {
   const queryClient = useQueryClient()
-  const updateProfile = useUserProfileUpdate()
   const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -44,24 +43,22 @@ export default function ChangeDetails({ name, email, userId }: Props) {
     },
   })
 
-  const onSubmit = async (formData: z.infer<typeof formSchema>) => {
-    await updateProfile.mutateAsync(
-      { name: formData.name.toLowerCase(), id: userId, email: formData.email },
-      {
-        onSuccess: () => {
-          toast({ description: "Updated name successfully" })
+  const onSubmit = useCallback(
+    async (formData: z.infer<typeof formSchema>) => {
+      const { message, status } = await updateUserProfile(userId!, { name: formData.name })
 
-          queryClient.setQueryData(["user-profile"], (prev: Profile) => ({
-            ...prev,
-            name: formData.name.toLowerCase(),
-          }))
-        },
-        onError: (error) => {
-          toast({ description: error.message, variant: "destructive" })
-        },
+      toast({ description: message, variant: status === "error" ? "destructive" : "default" })
+
+      if (status === "success") {
+        queryClient.setQueryData(["user-profile"], (prev: Profile) => ({
+          ...prev,
+          name: formData.name.toLowerCase(),
+        }))
       }
-    )
-  }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [userId]
+  )
 
   return (
     <Card className="w-full lg:w-fit">

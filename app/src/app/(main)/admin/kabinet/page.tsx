@@ -1,12 +1,11 @@
 import NewKabinet from "@/components/kabinet/new-kabinet"
 import TableKabinet from "@/components/kabinet/table-kabinet"
-import createSupabaseServer from "@/lib/supabase/server"
-import getKabinet from "@/queries/kabinet/getKabinet"
+import getAllKabinet from "@/queries/kabinet/getAllKabinet"
+
+export const fetchCache = "force-cache"
 
 export default async function Page() {
-  const supabase = createSupabaseServer()
-
-  const { data } = await getKabinet(supabase)
+  const { data } = await getAllKabinet()
 
   if (data)
     return (
