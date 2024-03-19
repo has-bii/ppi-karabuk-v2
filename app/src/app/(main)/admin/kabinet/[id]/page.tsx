@@ -7,7 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import createSupabaseServer from "@/lib/supabase/server"
+import createSupabaseServer, { createSupabaseServiceRole } from "@/lib/supabase/server"
 import Link from "next/link"
 import getKabinetById from "@/queries/kabinet/getKabinetById"
 import KabinetEdit from "@/components/kabinet/edit-kabinet"
@@ -20,7 +20,7 @@ export const dynamicParams = true
 export const revalidate = false
 
 export default async function Page({ params: { id } }: { params: { id: string } }) {
-  const supabase = createSupabaseServer()
+  const supabase = createSupabaseServiceRole()
   const queryClient = new QueryClient()
 
   const { data } = await getKabinetById(supabase, id)
@@ -39,7 +39,13 @@ export default async function Page({ params: { id } }: { params: { id: string } 
 
   await queryClient.prefetchQuery({
     queryKey: ["users"],
-    queryFn: () => getUsers().then((res) => res.data),
+    queryFn: async () => {
+      const { data, error } = await getUsers()
+
+      if (error) throw new Error(error.message)
+
+      return data
+    },
   })
 
   if (data)

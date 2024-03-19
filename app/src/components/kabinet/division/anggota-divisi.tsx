@@ -77,8 +77,6 @@ export default function AnggotaDivisi({ kabinetId }: Props) {
 
   const submitHandler = useCallback(
     async (formData: z.infer<typeof formSchema>) => {
-      console.log("Form: ", formData)
-
       const res = await anggotaDivisiAdd({ ...formData, kabinet_id: kabinetId })
 
       toast({
@@ -244,13 +242,11 @@ export default function AnggotaDivisi({ kabinetId }: Props) {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {users
-                                  ?.filter((item) => !!item.name)
-                                  .map((user) => (
-                                    <SelectItem key={user.id} value={user.id}>
-                                      {user.name || ""}
-                                    </SelectItem>
-                                  ))}
+                                {users?.map((user) => (
+                                  <SelectItem key={user.id} value={user.id}>
+                                    {user.name || ""}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
                           </div>

@@ -33,12 +33,12 @@ export default async function anggotaDivisiAdd({
 
     if (error) {
       console.error(`Failed to add user to the division: `, error)
-      return { status: "error", message: "Added a user to a division!" }
+      return { status: "error", message: "Failed to add a user to a division!" }
     }
 
     revalidatePath(`/admin/kabinet/${data.kabinet_id}`)
 
-    return { status: "success", message: "Failed to add a user to a division!", data }
+    return { status: "success", message: "Added a user to a division!", data }
   } catch (error) {
     console.error("Failed to add user to the division!: ", error)
     return { status: "error", message: "Internal server error!" }
