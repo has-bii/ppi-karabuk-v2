@@ -209,7 +209,7 @@ export default function ManageUsers({ dataProp }: Props) {
         accessorKey: "created_at",
         header: ({ column }) => (
           <button
-            className="inline-flex items-center"
+            className="inline-flex items-center whitespace-nowrap"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Created At
