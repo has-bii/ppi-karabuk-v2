@@ -195,7 +195,10 @@ export type Database = {
       DivisionType: "ketua" | "sekretaris" | "bendahara" | "MPA" | "divisi"
       DivisionUserType: "ketua" | "anggota"
       Role: "ADMIN" | "BPH" | "STUDENT"
-      Settings: "signup_is_enabled" | "signup_default_role"
+      Settings:
+        | "signup_is_enabled"
+        | "signup_default_role"
+        | "signup_default_status"
     }
     CompositeTypes: {
       [_ in never]: never

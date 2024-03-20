@@ -1,12 +1,15 @@
 import { createSupabaseServiceRole } from "@/lib/supabase/server"
 import { getSignupSettings } from "@/utils/signup-settings/fetch-signup-settings"
-import { revalidatePath, revalidateTag } from "next/cache"
+import { revalidateTag } from "next/cache"
 
 export async function POST(request: Request) {
   try {
     const supabase = createSupabaseServiceRole()
-    const { signup_default_role: roles, signup_is_enabled: isEnabled } =
-      await getSignupSettings(supabase)
+    const {
+      signup_default_role: roles,
+      signup_is_enabled: isEnabled,
+      signup_default_status: defaultStatus,
+    } = await getSignupSettings(supabase)
 
     if (!isEnabled)
       return Response.json({
@@ -38,6 +41,13 @@ export async function POST(request: Request) {
       .eq("user_id", user?.id!)
 
     if (error1) return Response.json({ status: "error", message: error1.message })
+
+    const { error: error2 } = await supabase
+      .from("profiles")
+      .update({ isActive: defaultStatus })
+      .eq("id", user?.id!)
+
+    if (error2) return Response.json({ status: "error", message: error2.message })
 
     return Response.json({
       status: "success",

@@ -30,6 +30,13 @@ export async function actionInvitesUsers({
 
     if (error1) return { status: "error", message: error1.message }
 
+    const { error: error2 } = await supabase
+      .from("profiles")
+      .update({ isActive: true })
+      .eq("id", data.user.id)
+
+    if (error2) return { status: "error", message: error2.message }
+
     revalidateTag("all-profiles")
     revalidateTag("all-users")
 

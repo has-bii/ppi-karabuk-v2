@@ -9,11 +9,13 @@ import { revalidatePath, revalidateTag } from "next/cache"
 type Params = {
   signup_default_role: Role[]
   signup_is_enabled: boolean
+  signup_default_status: boolean
 }
 
 export default async function saveSettings({
   signup_default_role,
   signup_is_enabled,
+  signup_default_status,
 }: Params): Promise<Response> {
   try {
     const supabase = createSupabaseServiceRole()
@@ -35,6 +37,13 @@ export default async function saveSettings({
       .eq("setting", "signup_is_enabled")
 
     if (error1) return { status: "error", message: error1.message }
+
+    const { error: error2 } = await supabase
+      .from("settings")
+      .update({ setting: "signup_default_status", value: { boolean: signup_default_status } })
+      .eq("setting", "signup_default_status")
+
+    if (error2) return { status: "error", message: error2.message }
 
     revalidatePath("/admin/invite-user")
     revalidateTag("signup-settings")

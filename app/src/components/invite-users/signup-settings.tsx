@@ -34,6 +34,7 @@ import { useQueryClient } from "@tanstack/react-query"
 
 const formSchema = z.object({
   signup_is_enabled: z.boolean(),
+  signup_default_status: z.boolean(),
   signup_default_role: z.array(z.enum(["STUDENT", "BPH", "ADMIN"])),
 })
 
@@ -52,6 +53,11 @@ export default function SignUpSettings() {
       signup_default_role: (
         data?.find((item) => item.setting === "signup_default_role")?.value as { array: Role[] }
       )?.array,
+      signup_default_status: (
+        data?.find((item) => item.setting === "signup_default_status")?.value as {
+          boolean: boolean
+        }
+      )?.boolean,
     },
   })
 
@@ -77,6 +83,12 @@ export default function SignUpSettings() {
           setting: "signup_is_enabled",
           value: {
             boolean: formData.signup_is_enabled,
+          },
+        },
+        {
+          setting: "signup_default_status",
+          value: {
+            boolean: formData.signup_default_status,
           },
         },
       ])
@@ -105,6 +117,25 @@ export default function SignUpSettings() {
                         <div className="space-y-0.5">
                           <FormLabel>Enable user signs up</FormLabel>
                           <FormDescription>When enabled, a user can sign up.</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* signup_is_enabled */}
+                  <FormField
+                    control={form.control}
+                    name="signup_default_status"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>Default user status</FormLabel>
+                          <FormDescription>
+                            When enabled, user status will be active.
+                          </FormDescription>
                         </div>
                         <FormControl>
                           <Switch checked={field.value} onCheckedChange={field.onChange} />

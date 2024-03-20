@@ -21,6 +21,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons"
+import { Label } from "../ui/label"
 
 type Inputs = { id: Role; label: string }
 
@@ -84,6 +85,7 @@ export default function InviteUsers() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(submitHandler)} className="space-y-2">
+            {/* Name */}
             <FormField
               control={form.control}
               name="name"
@@ -97,6 +99,8 @@ export default function InviteUsers() {
                 </FormItem>
               )}
             />
+
+            {/* Email */}
             <FormField
               control={form.control}
               name="email"
@@ -110,28 +114,36 @@ export default function InviteUsers() {
                 </FormItem>
               )}
             />
-            {roles.map((item) => (
-              <FormField
-                key={item.id}
-                control={form.control}
-                name="roles"
-                render={({ field }) => (
-                  <FormItem key={item.id} className="flex flex-row items-start space-x-3 space-y-0">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value?.includes(item.id)}
-                        onCheckedChange={(checked) => {
-                          return checked
-                            ? field.onChange([...field.value, item.id])
-                            : field.onChange(field.value?.filter((value) => value !== item.id))
-                        }}
-                      />
-                    </FormControl>
-                    <FormLabel className="font-normal">{item.label}</FormLabel>
-                  </FormItem>
-                )}
-              />
-            ))}
+
+            {/* User roles */}
+            <div className="space-y-2">
+              <Label>User Roles</Label>
+              {roles.map((item) => (
+                <FormField
+                  key={item.id}
+                  control={form.control}
+                  name="roles"
+                  render={({ field }) => (
+                    <FormItem
+                      key={item.id}
+                      className="flex flex-row items-start space-x-3 space-y-0"
+                    >
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value?.includes(item.id)}
+                          onCheckedChange={(checked) => {
+                            return checked
+                              ? field.onChange([...field.value, item.id])
+                              : field.onChange(field.value?.filter((value) => value !== item.id))
+                          }}
+                        />
+                      </FormControl>
+                      <FormLabel className="font-normal">{item.label}</FormLabel>
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </div>
             <div className="inline-flex w-full">
               <Button className="ml-auto" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting && (

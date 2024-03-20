@@ -20,7 +20,11 @@ const getSignupSettings = unstable_cache(
       (data.find((item) => item.setting === "signup_is_enabled")?.value as { boolean: boolean })
         ?.boolean || null
 
-    return { signup_default_role, signup_is_enabled }
+    const signup_default_status =
+      (data.find((item) => item.setting === "signup_default_status")?.value as { boolean: boolean })
+        ?.boolean || false
+
+    return { signup_default_role, signup_is_enabled, signup_default_status }
   },
   ["signup-settings"]
 )
