@@ -23,11 +23,11 @@ export default async function Page() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="flex flex-col gap-4 lg:flex-row">
-        {/* Invite Users */}
-        <InviteUsers />
-
         {/* Signup settings */}
         <SignUpSettings />
+
+        {/* Invite Users */}
+        <InviteUsers />
       </div>
     </HydrationBoundary>
   )

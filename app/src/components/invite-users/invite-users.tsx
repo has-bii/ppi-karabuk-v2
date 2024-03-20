@@ -77,7 +77,7 @@ export default function InviteUsers() {
   }, [])
 
   return (
-    <Card className="w-full lg:w-fit">
+    <Card className="h-fit w-full lg:w-fit">
       <CardHeader>
         <CardTitle>Invite Users</CardTitle>
         <CardDescription>You can invite users and give them some roles directly.</CardDescription>
