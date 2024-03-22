@@ -8,12 +8,12 @@ type Props = {
 }
 
 export const metadata: Metadata = {
-  title: "Admin | PPI Karabuk",
+  title: "Student | PPI Karabuk",
 }
 
 export const fetchCache = "default-no-store"
 
-export default async function SuperAdminLayout({ children }: Props) {
+export default async function StudentLayout({ children }: Props) {
   const role = await getUserRole()
 
   return (

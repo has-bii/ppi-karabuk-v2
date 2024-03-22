@@ -45,7 +45,6 @@ const getKabinetById = async (id: string) => {
       )`
     )
     .eq("id", id)
-    .throwOnError()
     .single()
 }
 

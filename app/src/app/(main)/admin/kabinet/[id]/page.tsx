@@ -13,6 +13,7 @@ import KabinetEdit from "@/components/kabinet/edit-kabinet"
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query"
 import AnggotaDivisi from "@/components/kabinet/division/anggota-divisi"
 import { getProfilesCached } from "@/queries/profile/getProfilesCached"
+import { redirect } from "next/navigation"
 
 export const fetchCache = "force-cache"
 export const dynamicParams = true
@@ -22,6 +23,8 @@ export default async function Page({ params: { id } }: { params: { id: string } 
   const queryClient = new QueryClient()
 
   const { data } = await getKabinetById(id)
+
+  if (!data) redirect("/admin/kabinet")
 
   await queryClient.prefetchQuery({
     queryKey: ["kabinet", id],
