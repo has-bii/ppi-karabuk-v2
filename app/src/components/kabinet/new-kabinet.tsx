@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useCallback, useMemo } from "react"
+import { useCallback } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import {
@@ -27,18 +27,16 @@ import createKabinet from "@/utils/kabinet/create-kabinet"
 import { useToast } from "@/components/ui/use-toast"
 import { useQueryClient } from "@tanstack/react-query"
 
+const formSchema = z.object({
+  name: z.string().min(6, { message: "At least contains 6 characters!" }),
+  start_date: z.date(),
+  end_date: z.date(),
+})
+
 export default function NewKabinet() {
   const { toast } = useToast()
   const queryClient = useQueryClient()
-  const formSchema = useMemo(
-    () =>
-      z.object({
-        name: z.string().min(6, { message: "At least contains 6 characters!" }),
-        start_date: z.date(),
-        end_date: z.date(),
-      }),
-    []
-  )
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

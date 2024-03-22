@@ -1,4 +1,4 @@
-create type "public"."Settings" as enum ('signup_is_enabled', 'signup_default_role');
+create type "public"."Settings" as enum ('signup_is_enabled', 'signup_default_role', 'signup_default_status');
 
 create table "public"."settings" (
     "setting" "Settings" not null,

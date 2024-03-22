@@ -161,6 +161,80 @@ export type Database = {
         }
         Relationships: []
       }
+      student_database: {
+        Row: {
+          birth_date: string
+          birth_place: string
+          created_at: string
+          department: string
+          domisili: string
+          email: string
+          file_ikamet: string | null
+          file_paspor: string | null
+          file_student: string
+          gender: Database["public"]["Enums"]["Gender"]
+          name: string
+          no_active: string
+          no_ikamet: string | null
+          no_paspor: string | null
+          no_student: string
+          no_wa: string
+          strata: Database["public"]["Enums"]["Strata"]
+          tahun_kedatangan: number
+          user_id: string
+        }
+        Insert: {
+          birth_date: string
+          birth_place: string
+          created_at?: string
+          department: string
+          domisili: string
+          email: string
+          file_ikamet?: string | null
+          file_paspor?: string | null
+          file_student: string
+          gender: Database["public"]["Enums"]["Gender"]
+          name: string
+          no_active: string
+          no_ikamet?: string | null
+          no_paspor?: string | null
+          no_student: string
+          no_wa: string
+          strata: Database["public"]["Enums"]["Strata"]
+          tahun_kedatangan: number
+          user_id?: string
+        }
+        Update: {
+          birth_date?: string
+          birth_place?: string
+          created_at?: string
+          department?: string
+          domisili?: string
+          email?: string
+          file_ikamet?: string | null
+          file_paspor?: string | null
+          file_student?: string
+          gender?: Database["public"]["Enums"]["Gender"]
+          name?: string
+          no_active?: string
+          no_ikamet?: string | null
+          no_paspor?: string | null
+          no_student?: string
+          no_wa?: string
+          strata?: Database["public"]["Enums"]["Strata"]
+          tahun_kedatangan?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_student_database_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_role: {
         Row: {
           role: Database["public"]["Enums"]["Role"][] | null
@@ -194,11 +268,13 @@ export type Database = {
     Enums: {
       DivisionType: "ketua" | "sekretaris" | "bendahara" | "MPA" | "divisi"
       DivisionUserType: "ketua" | "anggota"
+      Gender: "male" | "female"
       Role: "ADMIN" | "BPH" | "STUDENT"
       Settings:
         | "signup_is_enabled"
         | "signup_default_role"
         | "signup_default_status"
+      Strata: "S1" | "S2" | "S3" | "D3" | "TOMER"
     }
     CompositeTypes: {
       [_ in never]: never
