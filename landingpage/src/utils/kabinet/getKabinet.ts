@@ -5,7 +5,7 @@ export async function getKabinets() {
     const res = await fetch(`${process.env.APP_URL}/api/kabinet`, {
       next: {
         tags: ["kabinet"],
-        revalidate: 3600,
+        revalidate: 0,
       },
     })
 
@@ -22,7 +22,7 @@ export async function getKabinetById(id: string) {
     const res = await fetch(`${process.env.APP_URL}/api/kabinet`, {
       next: {
         tags: ["kabinet", id],
-        revalidate: 3600,
+        revalidate: 0,
       },
     })
 
