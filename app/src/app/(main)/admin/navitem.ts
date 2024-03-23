@@ -17,4 +17,8 @@ export const navItems: NavItems[] = [
     href: "/admin/kabinet",
     name: "Kabinet",
   },
+  {
+    href: "/admin/database",
+    name: "Database",
+  },
 ]

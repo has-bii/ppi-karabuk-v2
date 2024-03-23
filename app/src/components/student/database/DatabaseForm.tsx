@@ -26,6 +26,7 @@ import { useToast } from "@/components/ui/use-toast"
 import useUserProfileQuery from "@/hooks/user-profile/useUserProfileQuery"
 import useSupabaseClient from "@/lib/supabase/supabase-browser"
 import { cn } from "@/lib/utils"
+import revalidateDatabases from "@/queries/database/revalidateDatabases"
 import { setFileName } from "@/utils/generateFileName"
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -190,6 +191,8 @@ export default function DatabaseForm() {
         file_paspor,
       })
       .match({ user_id: user?.id! })
+
+    await revalidateDatabases()
 
     if (error) toast({ variant: "destructive", description: error.message })
     else toast({ description: "Saved student database successfully" })
