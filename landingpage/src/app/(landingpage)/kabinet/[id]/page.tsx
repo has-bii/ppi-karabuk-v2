@@ -39,16 +39,16 @@ export default async function Page({ params: { id } }: Props) {
       <div className="container spacing">
         <h1>{`Kabinet ` + data.name}</h1>
         <div className="space-y-8">
-          {divisiKetua?.anggota.length !== 0 && (
+          {divisiKetua && (
             <Division
               division={divisiKetua}
               divisionName="Ketua BPH"
               anggotaPositionName="Wakil Anggota"
             />
           )}
-          {divisiMPA?.anggota.length !== 0 && <Division division={divisiMPA} />}
-          {divisiSekre?.anggota.length !== 0 && <Division division={divisiSekre} />}
-          {divisiBendahara?.anggota.length !== 0 && <Division division={divisiBendahara} />}
+          {divisiMPA && <Division division={divisiMPA} />}
+          {divisiSekre && <Division division={divisiSekre} />}
+          {divisiBendahara && <Division division={divisiBendahara} />}
           {divisions.map((divisi) => (
             <Division key={divisi.name} division={divisi} />
           ))}
