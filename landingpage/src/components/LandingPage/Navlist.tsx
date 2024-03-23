@@ -21,11 +21,15 @@ export default function Navlist() {
             <FontAwesomeIcon icon={faXmark} size="xl" />
           </button>
         </li>
+
+        {/* Home */}
         <li>
           <Link href="/" className={`nav-item ${pathName === "/" ? "active" : ""}`}>
             home
           </Link>
         </li>
+
+        {/* Article */}
         <li>
           <Link
             href="/article"
@@ -34,6 +38,18 @@ export default function Navlist() {
             article
           </Link>
         </li>
+
+        {/* Kabinet */}
+        <li>
+          <Link
+            href="/kabinet"
+            className={`nav-item ${pathName.startsWith("/kabinet") ? "active" : ""}`}
+          >
+            kabinet
+          </Link>
+        </li>
+
+        {/* Login */}
         <li className="mt-auto mb-4 block lg:hidden">
           <Link href="/auth" className="button white">
             login
