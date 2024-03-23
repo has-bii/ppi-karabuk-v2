@@ -7,7 +7,7 @@ type Props = {
 }
 
 export const metadata: Metadata = {
-  title: "Admin | PPI Karabuk",
+  title: "BPH | PPI Karabuk",
 }
 
 export const fetchCache = "default-no-store"
