@@ -21,7 +21,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: process.env.APP_URL,
+        hostname: process.env.APP_IMAGE_URL,
         port: "",
         pathname: "/storage/v1/object/public/**",
       },
