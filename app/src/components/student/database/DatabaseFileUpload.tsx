@@ -93,7 +93,7 @@ export default function DatabaseFileUpload({
           id={id}
           type="file"
           onChange={uploadFileHandler}
-          accept="image/png,image/jpg,image/jpeg"
+          accept="image/png,image/jpg,image/jpeg,application/pdf"
           required={isRequired}
         />
       )}
