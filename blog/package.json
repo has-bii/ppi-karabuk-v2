@@ -21,7 +21,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^5.3.4",
-    "strapi-provider-upload-supa-own": "file:providers/strapi-provider-upload-supa-own",
+    "strapi-provider-upload-supa-own": "1.0.0",
     "styled-components": "^5.3.11"
   },
   "engines": {
