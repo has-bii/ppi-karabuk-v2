@@ -82,8 +82,7 @@ export async function generateMetadata({
   const data = await getData(params.slug)
 
   return {
-    title: "Article | PPI Karabuk",
-    metadataBase: new URL("www.ppi-karabuk.com"),
+    title: `${data?.attributes.category.data.attributes.name} | PPI Karabuk"`,
     description: data?.attributes.excerpt,
     openGraph: {
       title: data?.attributes.title,
