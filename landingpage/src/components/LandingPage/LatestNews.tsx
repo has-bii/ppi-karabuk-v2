@@ -14,8 +14,7 @@ async function fetchData(): Promise<NewsDataAttributes[]> {
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
-    // throw new Error("Failed to fetch data")
-    return []
+    throw new Error("Failed to fetch data")
   }
 
   const data: ILatestNews = await res.json()

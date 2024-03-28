@@ -83,13 +83,13 @@ export async function generateMetadata({
 
   return {
     title: "Article | PPI Karabuk",
-    metadataBase: new URL(process.env.BASE_URL || "http://localhost:3000/"),
+    metadataBase: new URL("www.ppi-karabuk.com"),
     description: data?.attributes.excerpt,
     openGraph: {
       title: data?.attributes.title,
       url: "www.ppi-karabuk.com",
       description: data?.attributes.excerpt,
-      images: `${process.env.NEXT_PUBLIC_BLOG_API}${data?.attributes.hero.data.attributes.formats.thumbnail.url}`,
+      images: data?.attributes.hero.data.attributes.formats.thumbnail.url,
     },
   }
 }
