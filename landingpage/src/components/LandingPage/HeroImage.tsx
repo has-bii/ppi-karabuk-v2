@@ -28,7 +28,7 @@ const items = images.map((item, index) => (
       alt={item.alt}
       fill
       priority
-      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 100vw"
+      sizes="(max-width: 768px) 100vw, 66vw"
       style={{ objectFit: "cover" }}
     />
   </div>
