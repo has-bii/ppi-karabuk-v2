@@ -56,14 +56,16 @@ export default function RenderContent({ contents }: Props) {
     // Image
     if (item.type === "image")
       return (
-        <Image
-          key={index}
-          src={item.image.url}
-          alt={item.image.caption || ""}
-          height={item.image.formats.medium.height}
-          width={item.image.formats.medium.width}
-          className="content-image mb-4"
-        />
+        <div className="w-full inline-flex justify-center">
+          <Image
+            key={index}
+            src={item.image.url}
+            alt={item.image.caption || ""}
+            height={item.image.formats.medium.height}
+            width={item.image.formats.medium.width}
+            className="content-image mb-4"
+          />
+        </div>
       )
 
     // Quote
