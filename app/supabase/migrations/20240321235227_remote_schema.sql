@@ -1,4 +1,3 @@
-insert into storage.buckets(id,name, public, file_size_limit, allowed_mime_types) values ('database','database', false, 2097152, array['image/png','image/jpg','image/jpeg','application/pdf']);
 
 create policy "user can insert  based on id"
 on "public"."student_database"

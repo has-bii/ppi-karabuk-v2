@@ -1,4 +1,3 @@
-insert into storage.buckets(id,name, public, file_size_limit, allowed_mime_types) values ('profiles','profiles', true, 2097152, array['image/png','image/jpg','image/jpeg']);
 
 create policy "Give users access to own profile 1ige2ga_0"
 on "storage"."objects"

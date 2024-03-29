@@ -5,8 +5,6 @@ create table "public"."settings" (
     "value" json not null
 );
 
-insert into public.settings (setting,value) values ('signup_default_role','{"array": []}'), ('signup_is_enabled','{"boolean": false}'), ('signup_default_status','{"boolean": false}');
-
 alter table "public"."settings" enable row level security;
 
 CREATE UNIQUE INDEX settings_pkey ON public.settings USING btree (setting);
