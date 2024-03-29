@@ -40,7 +40,7 @@ export default async function LatestNews() {
               fill
               quality={100}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover grayscale hover:grayscale-0 transition-all duration-150"
+              className="object-cover transition-all duration-150"
             />
           </div>
           <p className="text-neutral-400 font-light pt-2 text-sm">
@@ -52,7 +52,9 @@ export default async function LatestNews() {
               {item.attributes.author.data.attributes.name?.split(" ")[0]}
             </span>
           </p>
-          <h4 className="text-left line-clamp-4 font-bold text-base">{item.attributes.title}</h4>
+          <p className="text-black text-left line-clamp-4 font-bold text-base">
+            {item.attributes.title}
+          </p>
         </Link>
       ))}
     </div>

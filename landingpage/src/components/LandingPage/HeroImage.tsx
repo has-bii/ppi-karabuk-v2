@@ -40,6 +40,7 @@ export default function HeroImage() {
   return (
     <div className="w-full lg:w-3/5 h-96 lg:h-full overflow-hidden relative bg-black group">
       <button
+        aria-label="previous"
         className="absolute left-4 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out"
         onClick={(e) => carousel?.current?.slidePrev(e)}
       >
@@ -57,6 +58,7 @@ export default function HeroImage() {
         ref={carousel}
       />
       <button
+        aria-label="next"
         className="absolute right-4 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out"
         onClick={(e) => carousel?.current?.slideNext(e)}
       >

@@ -13,10 +13,16 @@ export default function Footer() {
           </p>
           <div className="inline-flex gap-2 items-center">
             <p className="text-white/60">Follow us on social media</p>
-            <Link href="https://www.youtube.com/@mahasiswakarabuk6988">
+            <Link
+              href="https://www.youtube.com/@mahasiswakarabuk6988"
+              aria-label="Open PPI Karabuk Youtube channel"
+            >
               <FontAwesomeIcon icon={faYoutube} />
             </Link>
-            <Link href="https://www.instagram.com/ppikarabuk/">
+            <Link
+              href="https://www.instagram.com/ppikarabuk/"
+              aria-label="Open PPI Karabuk Instagram account"
+            >
               <FontAwesomeIcon icon={faInstagram} />
             </Link>
           </div>

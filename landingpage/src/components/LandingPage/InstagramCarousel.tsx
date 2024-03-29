@@ -19,6 +19,7 @@ export default function InstagramCarousel({ data }: Props) {
   return (
     <>
       <button
+        aria-label="previous"
         className="absolute -left-8 top-1/2 -translate-y-1/2 z-10 hidden md:block"
         onClick={(e) => carousel?.current?.slidePrev(e)}
       >
@@ -35,6 +36,7 @@ export default function InstagramCarousel({ data }: Props) {
         ref={carousel}
       />
       <button
+        aria-label="next"
         className="absolute -right-8 top-1/2 -translate-y-1/2 z-10 hidden md:block"
         onClick={(e) => carousel?.current?.slideNext(e)}
       >
