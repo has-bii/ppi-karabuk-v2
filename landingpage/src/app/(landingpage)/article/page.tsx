@@ -10,6 +10,18 @@ import { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Article | PPI Karabuk",
+  openGraph: {
+    url: new URL("https://www.ppi-karabuk.com/article"),
+    title: "Article | PPI Karabuk",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    noimageindex: false,
+    notranslate: true,
+    "max-snippet": 0,
+  },
 }
 
 type TypeParams = {

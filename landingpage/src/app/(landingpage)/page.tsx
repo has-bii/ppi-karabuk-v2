@@ -8,6 +8,22 @@ import LatestNews from "@/components/LandingPage/LatestNews"
 
 export const metadata: Metadata = {
   title: "Home | PPI Karabuk",
+  description:
+    "PPI Karabük adalah wadah berhimpunnya pelajar Indonesia di Karabük untuk membina anggota, pendalaman etika, ilmu, akselerasi potensi diri dan penyaluran aspirasi.",
+  openGraph: {
+    url: new URL("https://www.ppi-karabuk.com"),
+    title: "Home | PPI Karabuk",
+    type: "website",
+    description:
+      "PPI Karabük adalah wadah berhimpunnya pelajar Indonesia di Karabük untuk membina anggota, pendalaman etika, ilmu, akselerasi potensi diri dan penyaluran aspirasi.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    noimageindex: false,
+    notranslate: true,
+    "max-snippet": 0,
+  },
 }
 
 export const dynamic = "force-dynamic"
