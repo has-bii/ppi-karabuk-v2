@@ -84,11 +84,29 @@ export async function generateMetadata({
   return {
     title: data?.attributes.title,
     description: data?.attributes.excerpt,
+    authors: [
+      {
+        name: data?.attributes.author.data.attributes.name,
+        url: `https://www.instagram.com/${data?.attributes.author.data.attributes.instagram}`,
+      },
+    ],
     openGraph: {
       title: data?.attributes.title,
+      type: "article",
       url: "www.ppi-karabuk.com",
       description: data?.attributes.excerpt,
       images: data?.attributes.hero.data.attributes.formats.thumbnail.url,
+      authors: data?.attributes.author.data.attributes.name,
+      publishedTime: data?.attributes.publishedAt,
     },
+    robots: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      notranslate: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+    },
+    category: data?.attributes.category.data.attributes.name,
   }
 }
