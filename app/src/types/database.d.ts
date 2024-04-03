@@ -95,6 +95,8 @@ export type Database = {
           created_at: string
           end_date: string
           id: string
+          image: string | null
+          isShow: boolean
           name: string
           start_date: string
         }
@@ -102,6 +104,8 @@ export type Database = {
           created_at?: string
           end_date: string
           id?: string
+          image?: string | null
+          isShow?: boolean
           name: string
           start_date?: string
         }
@@ -109,6 +113,8 @@ export type Database = {
           created_at?: string
           end_date?: string
           id?: string
+          image?: string | null
+          isShow?: boolean
           name?: string
           start_date?: string
         }
