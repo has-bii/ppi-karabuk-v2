@@ -38,7 +38,7 @@ export default function Menu() {
         </li>
         {/* Student */}
         <li>
-          <Link href="/student">
+          <Link href="/student/database">
             <FontAwesomeIcon
               icon={faGraduationCap}
               size="lg"
@@ -48,7 +48,7 @@ export default function Menu() {
         </li>
         {/* BPH */}
         <li>
-          <Link href="/bph">
+          <Link href="/bph/kabinet">
             <FontAwesomeIcon
               icon={faUserTie}
               size="lg"
@@ -58,7 +58,7 @@ export default function Menu() {
         </li>
         {/* Super Admin */}
         <li>
-          <Link href="/admin">
+          <Link href="/admin/manage-user">
             <FontAwesomeIcon
               icon={faKey}
               size="lg"
