@@ -86,7 +86,7 @@ export default function KabinetImage({ id }: Props) {
   const closeDialog = useCallback(() => setOpen(false), [])
 
   return (
-    <div className="relative h-96 w-full overflow-hidden rounded-md bg-black">
+    <div className="relative h-96 w-full overflow-hidden rounded-md bg-foreground">
       {data?.image ? (
         <Image
           alt=""
