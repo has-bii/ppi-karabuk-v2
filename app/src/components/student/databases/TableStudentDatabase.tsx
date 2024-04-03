@@ -137,13 +137,13 @@ export default function TableStudentDatabase({ dataProp }: Props) {
 
             {file_ikamet && (
               <Button size="sm" onClick={() => openFile(file_ikamet)}>
-                Open
+                Ikamet
               </Button>
             )}
 
             {file_paspor && (
               <Button size="sm" onClick={() => openFile(file_paspor)}>
-                Open
+                Paspor
               </Button>
             )}
           </div>
