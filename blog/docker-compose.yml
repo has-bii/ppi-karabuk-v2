@@ -32,3 +32,9 @@ services:
       - ./public/uploads:/opt/app/public/uploads
     ports:
       - "1337:1337"
+    networks:
+      - db-network
+
+networks:
+  db-network:
+    external: true
