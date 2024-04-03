@@ -9,7 +9,8 @@ export async function GET(request: Request) {
     const { data, error } = await supabase
       .from("kabinet")
       .select("*,division(*,division_user(*,profiles(name,image)))")
-      .order("start_date", { ascending: true })
+      .eq("isShow", true)
+      .order("start_date", { ascending: false })
 
     if (error) Response.json({ ok: false, data: null, message: error.message })
 
