@@ -1,1 +1,1 @@
-export type Buckets = "profiles"
+export type Buckets = "profiles" | "kabinet"

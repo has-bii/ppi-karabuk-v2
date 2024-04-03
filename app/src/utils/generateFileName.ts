@@ -9,7 +9,7 @@ export default function generateFileName(originalFileName: string) {
   return uniqueFileName
 }
 
-export function setFileName(originalFileName: string, userId: string, fileName: string) {
+export function setFileName(originalFileName: string, id: string, fileName: string) {
   const fileExtension = path.extname(originalFileName)
-  return userId + "/" + fileName + fileExtension
+  return id + "/" + fileName + fileExtension
 }

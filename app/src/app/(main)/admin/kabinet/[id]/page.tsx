@@ -14,6 +14,7 @@ import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query
 import AnggotaDivisi from "@/components/kabinet/division/anggota-divisi"
 import { getProfilesCached } from "@/queries/profile/getProfilesCached"
 import { redirect } from "next/navigation"
+import KabinetImage from "@/components/kabinet/image-kabinet"
 
 export const fetchCache = "force-cache"
 export const dynamicParams = true
@@ -47,32 +48,36 @@ export default async function Page({ params: { id } }: { params: { id: string } 
     return (
       <HydrationBoundary state={dehydrate(queryClient)}>
         <div className="space-y-4">
-          {/* Breadcrumb */}
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="/">Dashboard</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="/admin">Admin</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="/admin/kabinet">Kabinet</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage className="font-semibold">{data.name}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <KabinetImage id={data.id} />
+
+          <div className="inline-flex justify-between">
+            {/* Breadcrumb */}
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link href="/">Dashboard</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link href="/admin">Admin</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link href="/admin/kabinet">Kabinet</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="font-semibold">{data.name}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
 
           {/* Edit */}
           <div className="flex w-full flex-col gap-8 lg:flex-row">
