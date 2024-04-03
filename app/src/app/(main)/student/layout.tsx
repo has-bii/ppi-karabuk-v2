@@ -24,7 +24,7 @@ export default async function StudentLayout({ children }: Props) {
           children
         ) : (
           <div className="h-full w-full">
-            Anda tidak bisa mengakses halaman ini, karena anda bukan seorang admin.
+            Anda tidak bisa mengakses halaman ini, karena anda bukan seorang mahasiswa.
           </div>
         )}
       </div>

@@ -25,17 +25,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import useSupabaseClient from "@/lib/supabase/supabase-browser"
 import useKabinetByIdQuery from "@/hooks/kabinet/byId/useKabinetByIdQuery"
 import { Database } from "@/types/database"
 
 type Props = {
   kabinetId: string
+  disableEdit?: boolean
 }
 
 type DivisionType = Database["public"]["Enums"]["DivisionType"]
 
-export default function Division({ kabinetId }: Props) {
+export default function Division({ kabinetId, disableEdit = false }: Props) {
   const { data } = useKabinetByIdQuery(kabinetId)
   const queryClient = useQueryClient()
   const { toast } = useToast()
@@ -68,7 +68,7 @@ export default function Division({ kabinetId }: Props) {
           <CardTitle className="inline-flex items-center justify-between">
             <span>Divisi-divisi</span>
             {/* Create a division */}
-            <DivisionCreate kabinetId={kabinetId} />
+            <DivisionCreate kabinetId={kabinetId} disableCreate={disableEdit} />
           </CardTitle>
           <CardDescription>Buat divisi sebelum memasukan anggota BPH dan MPA.</CardDescription>
           <CardContent className="flex flex-col gap-2 px-0 pt-2">
@@ -81,39 +81,43 @@ export default function Division({ kabinetId }: Props) {
                 >{`${data.division_user.length} anggota`}</Badge>
 
                 {/* Action button */}
-                <Dialog>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Open menu</span>
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>Open</DropdownMenuItem>
-                      <DialogTrigger asChild disabled={checkType(data.type)}>
-                        <DropdownMenuItem>
-                          <span>Delete</span>
-                        </DropdownMenuItem>
-                      </DialogTrigger>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Are you absolutely sure?</DialogTitle>
-                      <DialogDescription>
-                        This action cannot be undone. Are you sure you want to permanently delete
-                        this <span className="font-medium text-foreground">{data.name}</span> from
-                        the Kabinet?
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                      <Button variant="destructive" onClick={() => deleteHandler(data.id)}>
-                        Confirm
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
+                {disableEdit ? (
+                  ""
+                ) : (
+                  <Dialog>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem>Open</DropdownMenuItem>
+                        <DialogTrigger asChild disabled={checkType(data.type)}>
+                          <DropdownMenuItem>
+                            <span>Delete</span>
+                          </DropdownMenuItem>
+                        </DialogTrigger>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Are you absolutely sure?</DialogTitle>
+                        <DialogDescription>
+                          This action cannot be undone. Are you sure you want to permanently delete
+                          this <span className="font-medium text-foreground">{data.name}</span> from
+                          the Kabinet?
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <Button variant="destructive" onClick={() => deleteHandler(data.id)}>
+                          Confirm
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                )}
               </div>
             ))}
           </CardContent>

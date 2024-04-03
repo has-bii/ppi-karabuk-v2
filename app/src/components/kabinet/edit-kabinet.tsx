@@ -14,9 +14,10 @@ import editKabinet from "@/utils/kabinet/edit-kabinet"
 
 type Props = {
   dataProps: Database["public"]["Tables"]["kabinet"]["Row"]
+  disableEdit?: boolean
 }
 
-export default function KabinetEdit({ dataProps }: Props) {
+export default function KabinetEdit({ dataProps, disableEdit = false }: Props) {
   const { toast } = useToast()
   const queryClient = useQueryClient()
   const formSchema = useMemo(
@@ -90,6 +91,7 @@ export default function KabinetEdit({ dataProps }: Props) {
                   type="text"
                   className="w-fit bg-transparent text-lg font-semibold outline-none"
                   {...field}
+                  readOnly={disableEdit}
                 />
               </FormControl>
               <FormMessage />

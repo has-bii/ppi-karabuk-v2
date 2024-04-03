@@ -39,13 +39,14 @@ import { z } from "zod"
 
 type Props = {
   kabinetId: string
+  disableCreate?: boolean
 }
 
 const formSchema = z.object({
   name: z.string(),
 })
 
-export default function DivisionCreate({ kabinetId }: Props) {
+export default function DivisionCreate({ kabinetId, disableCreate = false }: Props) {
   const { toast } = useToast()
   const [isOpen, setOpen] = useState<boolean>(false)
   const queryClient = useQueryClient()
@@ -84,11 +85,15 @@ export default function DivisionCreate({ kabinetId }: Props) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="default" size="sm" className="h-fit py-1.5">
-          Create
-        </Button>
-      </DialogTrigger>
+      {disableCreate ? (
+        ""
+      ) : (
+        <DialogTrigger asChild>
+          <Button variant="default" size="sm" className="h-fit py-1.5">
+            Create
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Tambah Divisi Baru</DialogTitle>

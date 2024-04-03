@@ -31,6 +31,7 @@ export default async function deleteAnggotaDivisi({
     }
 
     revalidatePath(`/admin/kabinet/${data.kabinet_id}`)
+    revalidatePath(`/bph/kabinet/${data.kabinet_id}`)
 
     return { status: "success", message: `Removed ${name} from ${divisionName}` }
   } catch (error) {

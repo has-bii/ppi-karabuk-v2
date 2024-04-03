@@ -44,9 +44,15 @@ import {
 } from "@/components/ui/select"
 import useUsersQuery from "@/hooks/users/useUsersQuery"
 import anggotaDivisiAdd from "@/utils/kabinet/anggota-divisi/add-anggota"
+import { Database } from "@/types/database"
 
 type Props = {
   kabinetId: string
+  disableEdit?: boolean
+  position?: {
+    name: Database["public"]["Tables"]["division"]["Row"]["name"]
+    type: Database["public"]["Tables"]["division"]["Row"]["type"]
+  }
 }
 
 const formSchema = z
@@ -57,7 +63,7 @@ const formSchema = z
   })
   .required({ division_id: true, division_user_type: true, user_id: true })
 
-export default function AnggotaDivisi({ kabinetId }: Props) {
+export default function AnggotaDivisi({ kabinetId, disableEdit = false, position }: Props) {
   const [isOpen, setOpen] = useState<boolean>(false)
   const { toast } = useToast()
   const queryClient = useQueryClient()
@@ -104,11 +110,12 @@ export default function AnggotaDivisi({ kabinetId }: Props) {
 
       toast({ variant: status === "error" ? "destructive" : "default", description: message })
 
-      queryClient.setQueryData(["kabinet", kabinetId], (prev: KabinetByID) => {
-        prev.division_user = prev.division_user.filter((item) => item.id !== id)
+      if (status === "success")
+        queryClient.setQueryData(["kabinet", kabinetId], (prev: KabinetByID) => {
+          prev.division_user = prev.division_user.filter((item) => item.id !== id)
 
-        return prev
-      })
+          return prev
+        })
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [kabinetId]
@@ -160,46 +167,56 @@ export default function AnggotaDivisi({ kabinetId }: Props) {
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
-          return (
-            <Dialog>
-              <DialogTrigger asChild>
-                <Badge variant="destructive" className="py-1.5 hover:cursor-pointer">
-                  <FontAwesomeIcon icon={faTrashCan} className="mr-2" />
-                  <span>Delete</span>
-                </Badge>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Are you absolutely sure?</DialogTitle>
-                  <DialogDescription>
-                    This action cannot be undone. Are you sure you want to permanently remove{" "}
-                    <span className="font-medium capitalize text-foreground">
-                      {row.original.profiles?.name || "No Name"}
-                    </span>{" "}
-                    from{" "}
-                    <span className="font-medium text-foreground">
-                      {row.original.division?.name || "No Name"}
-                    </span>
-                    ?
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <Button
-                    variant="destructive"
-                    onClick={() =>
-                      deleteHandler(
-                        row.original.id,
-                        row.original.profiles?.name || "No name",
-                        row.original.division?.name!
-                      )
-                    }
-                  >
-                    Confirm
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+          let show = !disableEdit
+
+          if (
+            (position?.type === "ketua" || position?.type === "sekretaris") &&
+            row.original.division?.type === "MPA"
           )
+            show = false
+          if (position?.type === "MPA" && row.original.division?.type !== "MPA") show = false
+
+          if (show)
+            return (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Badge variant="destructive" className="py-1.5 hover:cursor-pointer">
+                    <FontAwesomeIcon icon={faTrashCan} className="mr-2" />
+                    <span>Delete</span>
+                  </Badge>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                    <DialogDescription>
+                      This action cannot be undone. Are you sure you want to permanently remove{" "}
+                      <span className="font-medium capitalize text-foreground">
+                        {row.original.profiles?.name || "No Name"}
+                      </span>{" "}
+                      from{" "}
+                      <span className="font-medium text-foreground">
+                        {row.original.division?.name || "No Name"}
+                      </span>
+                      ?
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button
+                      variant="destructive"
+                      onClick={() =>
+                        deleteHandler(
+                          row.original.id,
+                          row.original.profiles?.name || "No name",
+                          row.original.division?.name!
+                        )
+                      }
+                    >
+                      Confirm
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )
         },
       },
     ],
@@ -210,134 +227,146 @@ export default function AnggotaDivisi({ kabinetId }: Props) {
   if (data)
     return (
       <div className="w-full space-y-4 lg:space-y-2">
-        <div className="inline-flex w-full gap-2">
-          <Dialog open={isOpen} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm" className="ml-auto">
-                Tambah Anggota
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle className="text-left">Tambah Anggota</DialogTitle>
-                <DialogDescription className="text-left">
-                  Tambah seorang anggota ke dalam divisi.
-                </DialogDescription>
-              </DialogHeader>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(submitHandler)} className="grid space-y-2">
-                  {/* Users */}
-                  <FormField
-                    control={form.control}
-                    name="user_id"
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <FormLabel className="text-left">Anggota</FormLabel>
-                          <div className="col-span-3 inline-flex items-center gap-2">
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Pilih user sebagai anggota..." />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {users?.map((user) => (
-                                  <SelectItem key={user.id} value={user.id}>
-                                    {user.name || ""}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+        <div className="inline-flex w-full justify-end gap-2">
+          {disableEdit ? (
+            ""
+          ) : (
+            <Dialog open={isOpen} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm">Tambah Anggota</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle className="text-left">Tambah Anggota</DialogTitle>
+                  <DialogDescription className="text-left">
+                    Tambah seorang anggota ke dalam divisi.
+                  </DialogDescription>
+                </DialogHeader>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(submitHandler)} className="grid space-y-2">
+                    {/* Users */}
+                    <FormField
+                      control={form.control}
+                      name="user_id"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <FormLabel className="text-left">Anggota</FormLabel>
+                            <div className="col-span-3 inline-flex items-center gap-2">
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Pilih user sebagai anggota..." />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {users?.map((user) => (
+                                    <SelectItem key={user.id} value={user.id}>
+                                      {user.name || ""}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
 
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => refetch()}
-                              type="button"
-                            >
-                              <FontAwesomeIcon
-                                icon={faArrowsRotate}
-                                className={isRefetching ? "animate-spin" : ""}
-                              />
-                            </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => refetch()}
+                                type="button"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faArrowsRotate}
+                                  className={isRefetching ? "animate-spin" : ""}
+                                />
+                              </Button>
+                            </div>
                           </div>
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  {/* Divisi */}
-                  <FormField
-                    control={form.control}
-                    name="division_id"
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <FormLabel className="text-left">Divisi</FormLabel>
-                          <div className="col-span-3">
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Pilih divisi..." />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {data.division.map((divisi) => (
-                                  <SelectItem key={divisi.id} value={divisi.id}>
-                                    {divisi.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  {/* Posisi */}
-                  <FormField
-                    control={form.control}
-                    name="division_user_type"
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <FormLabel className="text-left">Posisi</FormLabel>
-                          <div className="col-span-3">
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Pilih posisi..." />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="ketua">Ketua</SelectItem>
-                                <SelectItem value="anggota">Anggota</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="inline-flex w-full">
-                    <Button
-                      type="submit"
-                      className="ml-auto"
-                      disabled={form.formState.isSubmitting}
-                    >
-                      {form.formState.isSubmitting && (
-                        <FontAwesomeIcon icon={faCircleNotch} className="mr-2 animate-spin" />
+                          <FormMessage />
+                        </FormItem>
                       )}
-                      Tambah
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </DialogContent>
-          </Dialog>
+                    />
+                    {/* Divisi */}
+                    <FormField
+                      control={form.control}
+                      name="division_id"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <FormLabel className="text-left">Divisi</FormLabel>
+                            <div className="col-span-3">
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Pilih divisi..." />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {data.division
+                                    .filter((divisi) => {
+                                      if (position?.type === "divisi") {
+                                        return divisi.name === position.name
+                                      } else if (position?.type === "MPA") {
+                                        return divisi.type === "MPA"
+                                      } else if (position?.type === "ketua") {
+                                        return divisi.type !== "MPA"
+                                      } else return true
+                                    })
+                                    .map((divisi) => (
+                                      <SelectItem key={divisi.id} value={divisi.id}>
+                                        {divisi.name}
+                                      </SelectItem>
+                                    ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {/* Posisi */}
+                    <FormField
+                      control={form.control}
+                      name="division_user_type"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <FormLabel className="text-left">Posisi</FormLabel>
+                            <div className="col-span-3">
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Pilih posisi..." />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="ketua">Ketua</SelectItem>
+                                  <SelectItem value="anggota">Anggota</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="inline-flex w-full">
+                      <Button
+                        type="submit"
+                        className="ml-auto"
+                        disabled={form.formState.isSubmitting}
+                      >
+                        {form.formState.isSubmitting && (
+                          <FontAwesomeIcon icon={faCircleNotch} className="mr-2 animate-spin" />
+                        )}
+                        Tambah
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
+          )}
           <Button variant="outline" size="sm" onClick={() => refetchK()} type="button">
             <FontAwesomeIcon
               icon={faArrowsRotate}

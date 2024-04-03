@@ -37,6 +37,7 @@ export default async function anggotaDivisiAdd({
     }
 
     revalidatePath(`/admin/kabinet/${data.kabinet_id}`)
+    revalidatePath(`/bph/kabinet/${data.kabinet_id}`)
 
     return { status: "success", message: "Added a user to a division!", data }
   } catch (error) {

@@ -1,4 +1,4 @@
-import { getKabinetById, getKabinetByIdUncached } from "@/queries/kabinet/getKabinetById"
+import { getKabinetByIdUncached } from "@/queries/kabinet/getKabinetById"
 import { useQuery } from "@tanstack/react-query"
 
 export default function useKabinetByIdQuery(id: string) {
