@@ -12,16 +12,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { setFileName } from "@/utils/generateFileName"
 import KabinetUploadImage from "@/utils/kabinet/image/upload-image-kabinet"
 import { KabinetByID } from "@/queries/kabinet/getKabinetById"
-import useKabinetByIdQuery from "@/hooks/kabinet/byId/useKabinetByIdQuery"
 import { openPublicFile } from "@/utils/S3"
 
 type Props = {
   id: string
+  data: KabinetByID
   disableChange?: boolean
 }
 
-export default function KabinetImage({ id, disableChange = false }: Props) {
-  const { data } = useKabinetByIdQuery(id)
+export default function KabinetImage({ id, disableChange = false, data }: Props) {
   const [isOpen, setOpen] = useState<boolean>(false)
   const queryClient = useQueryClient()
   const [file, setFile] = useState<{ file: File; src: string } | null>(null)

@@ -53,6 +53,7 @@ type Props = {
     name: Database["public"]["Tables"]["division"]["Row"]["name"]
     type: Database["public"]["Tables"]["division"]["Row"]["type"]
   }
+  initialData: KabinetByID
 }
 
 const formSchema = z
@@ -63,11 +64,20 @@ const formSchema = z
   })
   .required({ division_id: true, division_user_type: true, user_id: true })
 
-export default function AnggotaDivisi({ kabinetId, disableEdit = false, position }: Props) {
+export default function AnggotaDivisi({
+  kabinetId,
+  disableEdit = false,
+  position,
+  initialData,
+}: Props) {
   const [isOpen, setOpen] = useState<boolean>(false)
   const { toast } = useToast()
   const queryClient = useQueryClient()
-  const { data, refetch: refetchK, isRefetching: isRefetchingK } = useKabinetByIdQuery(kabinetId)
+  const {
+    data,
+    refetch: refetchK,
+    isRefetching: isRefetchingK,
+  } = useKabinetByIdQuery(kabinetId, initialData)
   const { data: users, refetch, isRefetching } = useUsersQuery()
 
   const form = useForm<z.infer<typeof formSchema>>({

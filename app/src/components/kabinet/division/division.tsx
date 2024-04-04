@@ -25,18 +25,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import useKabinetByIdQuery from "@/hooks/kabinet/byId/useKabinetByIdQuery"
 import { Database } from "@/types/database"
 
 type Props = {
   kabinetId: string
   disableEdit?: boolean
+  data: KabinetByID
 }
 
 type DivisionType = Database["public"]["Enums"]["DivisionType"]
 
-export default function Division({ kabinetId, disableEdit = false }: Props) {
-  const { data } = useKabinetByIdQuery(kabinetId)
+export default function Division({ kabinetId, disableEdit = false, data }: Props) {
   const queryClient = useQueryClient()
   const { toast } = useToast()
 
