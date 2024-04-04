@@ -15,18 +15,34 @@ import AnggotaDivisi from "./division/anggota-divisi"
 import useKabinetByIdQuery from "@/hooks/kabinet/byId/useKabinetByIdQuery"
 import { Badge } from "../ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
+import { Database } from "@/types/database"
 
 type Props = {
   id: string
+  disableChangeImage?: boolean
+  disableEditDivision?: boolean
+  disableEditAnggota?: boolean
+  disableEditKabinet?: boolean
+  position?: {
+    name: Database["public"]["Tables"]["division"]["Row"]["name"]
+    type: Database["public"]["Tables"]["division"]["Row"]["type"]
+  }
 }
 
-export default function Kabinet({ id }: Props) {
+export default function Kabinet({
+  id,
+  position,
+  disableChangeImage = false,
+  disableEditDivision = false,
+  disableEditAnggota = false,
+  disableEditKabinet = false,
+}: Props) {
   const { data, error } = useKabinetByIdQuery(id)
 
   if (data)
     return (
       <div className="space-y-4">
-        <KabinetImage id={id} data={data} />
+        <KabinetImage id={id} data={data} disableChange={disableChangeImage} />
 
         <div className="inline-flex w-full items-center justify-between">
           {/* Breadcrumb */}
@@ -57,7 +73,7 @@ export default function Kabinet({ id }: Props) {
           </Breadcrumb>
 
           {/* Settings */}
-          <KabinetSettings data={data} />
+          <KabinetSettings data={data} disableEdit={disableEditKabinet} />
         </div>
 
         {/* Edit */}
@@ -81,9 +97,14 @@ export default function Kabinet({ id }: Props) {
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <Division kabinetId={id} data={data} />
+            <Division kabinetId={id} data={data} disableEdit={disableEditDivision} />
           </div>
-          <AnggotaDivisi kabinetId={id} initialData={data} />
+          <AnggotaDivisi
+            kabinetId={id}
+            initialData={data}
+            disableEdit={disableEditAnggota}
+            position={position}
+          />
         </div>
       </div>
     )

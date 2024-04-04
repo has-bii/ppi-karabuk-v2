@@ -16,6 +16,7 @@ import { getProfilesCached } from "@/queries/profile/getProfilesCached"
 import { redirect } from "next/navigation"
 import createSupabaseServer from "@/lib/supabase/server"
 import KabinetImage from "@/components/kabinet/image-kabinet"
+import Kabinet from "@/components/kabinet/kabinet"
 
 export const fetchCache = "force-cache"
 export const dynamicParams = true
@@ -68,55 +69,16 @@ export default async function Page({ params: { kabinet_id } }: Props) {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="space-y-4">
-        <KabinetImage id={data.id} disableChange={division?.type !== "ketua"} />
-
-        <div className="inline-flex justify-between">
-          {/* Breadcrumb */}
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="/">Dashboard</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="/admin">Admin</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="/admin/kabinet">Kabinet</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage className="font-semibold">{data.name}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-
-        {/* Edit */}
-        <div className="flex w-full flex-col gap-8 lg:flex-row">
-          <Division
-            kabinetId={kabinet_id}
-            disableEdit={division?.type !== "ketua" && division?.type !== "sekretaris"}
-          />
-          <AnggotaDivisi
-            kabinetId={kabinet_id}
-            position={division!}
-            disableEdit={
-              division?.type !== "MPA" &&
-              division?.type !== "ketua" &&
-              division?.type !== "sekretaris"
-            }
-          />
-        </div>
-      </div>
+      <Kabinet
+        id={kabinet_id}
+        disableChangeImage={division?.type !== "ketua"}
+        disableEditKabinet={division?.type !== "ketua"}
+        disableEditDivision={division?.type !== "ketua" && division?.type !== "sekretaris"}
+        disableEditAnggota={
+          division?.type !== "MPA" && division?.type !== "ketua" && division?.type !== "sekretaris"
+        }
+        position={division!}
+      />
     </HydrationBoundary>
   )
 }
