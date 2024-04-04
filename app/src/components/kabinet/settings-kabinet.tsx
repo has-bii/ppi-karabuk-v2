@@ -1,14 +1,12 @@
 "use client"
 
 import { KabinetByID } from "@/queries/kabinet/getKabinetById"
-import React, { useCallback, useState } from "react"
+import React, { useCallback } from "react"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuPortal,
-  DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
