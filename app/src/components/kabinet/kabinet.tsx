@@ -58,7 +58,9 @@ export default function Kabinet({
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href={path}>Admin</Link>
+                  <Link className="capitalize" href={path}>
+                    {path.replace("/", "")}
+                  </Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
