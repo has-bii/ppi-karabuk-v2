@@ -23,6 +23,7 @@ type Props = {
   disableEditDivision?: boolean
   disableEditAnggota?: boolean
   disableEditKabinet?: boolean
+  path: string
   position?: {
     name: Database["public"]["Tables"]["division"]["Row"]["name"]
     type: Database["public"]["Tables"]["division"]["Row"]["type"]
@@ -32,6 +33,7 @@ type Props = {
 export default function Kabinet({
   id,
   position,
+  path,
   disableChangeImage = false,
   disableEditDivision = false,
   disableEditAnggota = false,
@@ -56,13 +58,13 @@ export default function Kabinet({
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href="/admin">Admin</Link>
+                  <Link href={path}>Admin</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href="/admin/kabinet">Kabinet</Link>
+                  <Link href={path + "/kabinet"}>Kabinet</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />

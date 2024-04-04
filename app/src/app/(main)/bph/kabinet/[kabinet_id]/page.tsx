@@ -1,21 +1,8 @@
-import Division from "@/components/kabinet/division/division"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import Link from "next/link"
 import { getKabinetById } from "@/queries/kabinet/getKabinetById"
-import KabinetEdit from "@/components/kabinet/edit-kabinet"
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query"
-import AnggotaDivisi from "@/components/kabinet/division/anggota-divisi"
 import { getProfilesCached } from "@/queries/profile/getProfilesCached"
 import { redirect } from "next/navigation"
 import createSupabaseServer from "@/lib/supabase/server"
-import KabinetImage from "@/components/kabinet/image-kabinet"
 import Kabinet from "@/components/kabinet/kabinet"
 
 export const fetchCache = "force-cache"
@@ -71,6 +58,7 @@ export default async function Page({ params: { kabinet_id } }: Props) {
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Kabinet
         id={kabinet_id}
+        path="/bph"
         disableChangeImage={division?.type !== "ketua"}
         disableEditKabinet={division?.type !== "ketua"}
         disableEditDivision={division?.type !== "ketua" && division?.type !== "sekretaris"}

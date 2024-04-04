@@ -49,7 +49,7 @@ export default async function Page({ params: { id } }: { params: { id: string } 
   if (data)
     return (
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <Kabinet id={id} />
+        <Kabinet id={id} path="/admin" />
       </HydrationBoundary>
     )
 
