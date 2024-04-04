@@ -15,6 +15,7 @@ import AnggotaDivisi from "@/components/kabinet/division/anggota-divisi"
 import { getProfilesCached } from "@/queries/profile/getProfilesCached"
 import { redirect } from "next/navigation"
 import createSupabaseServer from "@/lib/supabase/server"
+import KabinetImage from "@/components/kabinet/image-kabinet"
 
 export const fetchCache = "force-cache"
 export const dynamicParams = true
@@ -68,42 +69,43 @@ export default async function Page({ params: { kabinet_id } }: Props) {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="space-y-4">
-        {/* Breadcrumb */}
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/">Dashboard</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/bph">BPH</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/bph/kabinet">Kabinet</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage className="font-semibold">{data.name}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+        <KabinetImage id={data.id} disableChange={division?.type !== "ketua"} />
+
+        <div className="inline-flex justify-between">
+          {/* Breadcrumb */}
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="/">Dashboard</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="/admin">Admin</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="/admin/kabinet">Kabinet</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage className="font-semibold">{data.name}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
 
         {/* Edit */}
         <div className="flex w-full flex-col gap-8 lg:flex-row">
-          <div className="space-y-4">
-            <KabinetEdit dataProps={data} disableEdit={division?.type !== "ketua"} />
-            <Division
-              kabinetId={kabinet_id}
-              disableEdit={division?.type !== "ketua" && division?.type !== "sekretaris"}
-            />
-          </div>
+          <Division
+            kabinetId={kabinet_id}
+            disableEdit={division?.type !== "ketua" && division?.type !== "sekretaris"}
+          />
           <AnggotaDivisi
             kabinetId={kabinet_id}
             position={division!}

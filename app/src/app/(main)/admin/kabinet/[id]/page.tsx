@@ -81,10 +81,7 @@ export default async function Page({ params: { id } }: { params: { id: string } 
 
           {/* Edit */}
           <div className="flex w-full flex-col gap-8 lg:flex-row">
-            <div className="space-y-4">
-              <KabinetEdit dataProps={data} />
-              <Division kabinetId={id} />
-            </div>
+            <Division kabinetId={id} />
             <AnggotaDivisi kabinetId={id} />
           </div>
         </div>

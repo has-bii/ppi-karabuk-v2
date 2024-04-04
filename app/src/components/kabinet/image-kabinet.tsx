@@ -17,9 +17,10 @@ import { openPublicFile } from "@/utils/S3"
 
 type Props = {
   id: string
+  disableChange?: boolean
 }
 
-export default function KabinetImage({ id }: Props) {
+export default function KabinetImage({ id, disableChange = false }: Props) {
   const { data } = useKabinetByIdQuery(id)
   const [isOpen, setOpen] = useState<boolean>(false)
   const queryClient = useQueryClient()
@@ -86,7 +87,7 @@ export default function KabinetImage({ id }: Props) {
   const closeDialog = useCallback(() => setOpen(false), [])
 
   return (
-    <div className="relative h-96 w-full overflow-hidden rounded-md bg-foreground">
+    <div className="relative aspect-video h-auto w-full overflow-hidden rounded-md bg-foreground lg:h-96">
       {data?.image ? (
         <Image
           alt=""
@@ -100,73 +101,81 @@ export default function KabinetImage({ id }: Props) {
         ""
       )}
 
-      <Dialog open={isOpen} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button size="sm" variant="secondary" className="absolute bottom-4 right-4 items-center">
-            <FontAwesomeIcon icon={faImage} className="mr-1" />
-            Change Image
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Changing Kabinet Cover</DialogTitle>
-          </DialogHeader>
-          <div>
-            <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-md">
-              {file !== null ? (
-                <Image
-                  alt=""
-                  src={file.src}
-                  fill
-                  sizes="33vw"
-                  quality={100}
-                  priority
-                  className="object-cover"
-                />
-              ) : (
-                <div className="flex flex-col items-center justify-center gap-1 text-muted-foreground">
-                  <FontAwesomeIcon icon={faUpload} size="5x" className="text-default-200" />
-                  <span className="mt-2 text-sm font-light">File format: JPG / JPEG / PNG</span>
-                  <div className="inline-flex text-foreground">
-                    <label className="font-semibold underline hover:cursor-pointer">
-                      Click to upload
-                      <input
-                        type="file"
-                        className="hidden"
-                        onChange={uploadFileHandler}
-                        accept="image/png,image/jpg,image/jpeg"
-                      />
-                    </label>
-                    &nbsp;profile image.
+      {disableChange ? (
+        " "
+      ) : (
+        <Dialog open={isOpen} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="absolute bottom-4 right-4 items-center"
+            >
+              <FontAwesomeIcon icon={faImage} className="mr-1" />
+              Change Image
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Changing Kabinet Cover</DialogTitle>
+            </DialogHeader>
+            <div>
+              <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-md">
+                {file !== null ? (
+                  <Image
+                    alt=""
+                    src={file.src}
+                    fill
+                    sizes="33vw"
+                    quality={100}
+                    priority
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center gap-1 text-muted-foreground">
+                    <FontAwesomeIcon icon={faUpload} size="5x" className="text-default-200" />
+                    <span className="mt-2 text-sm font-light">File format: JPG / JPEG / PNG</span>
+                    <div className="inline-flex text-foreground">
+                      <label className="font-semibold underline hover:cursor-pointer">
+                        Click to upload
+                        <input
+                          type="file"
+                          className="hidden"
+                          onChange={uploadFileHandler}
+                          accept="image/png,image/jpg,image/jpeg"
+                        />
+                      </label>
+                      &nbsp;profile image.
+                    </div>
+                    <span className="text-sm font-light">Max file size: 2 MB</span>
                   </div>
-                  <span className="text-sm font-light">Max file size: 2 MB</span>
-                </div>
-              )}
-            </div>
-            <div className="mt-4 inline-flex w-full items-center gap-2">
-              {file !== null && (
+                )}
+              </div>
+              <div className="mt-4 inline-flex w-full items-center gap-2">
+                {file !== null && (
+                  <Button
+                    className="inline-flex w-full items-center gap-2 border bg-foreground font-semibold text-accent disabled:bg-accent-foreground"
+                    onClick={updateHandler}
+                  >
+                    {loading && <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" />}
+                    {loading ? "Uploading..." : "Save"}
+                  </Button>
+                )}
                 <Button
                   className="inline-flex w-full items-center gap-2 border bg-foreground font-semibold text-accent disabled:bg-accent-foreground"
-                  onClick={updateHandler}
+                  onClick={() => {
+                    setFile(null)
+                    closeDialog()
+                  }}
+                  disabled={loading}
                 >
-                  {loading && <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" />}
-                  {loading ? "Uploading..." : "Save"}
+                  Cancel
                 </Button>
-              )}
-              <Button
-                className="inline-flex w-full items-center gap-2 border bg-foreground font-semibold text-accent disabled:bg-accent-foreground"
-                onClick={() => {
-                  setFile(null)
-                  closeDialog()
-                }}
-                disabled={loading}
-              >
-                Cancel
-              </Button>
+              </div>
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   )
 }
