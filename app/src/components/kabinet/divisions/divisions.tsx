@@ -32,14 +32,12 @@ type Props = {
   kabinetId: string
   disableEdit?: boolean
   data: KabinetByID
-  path: string
 }
 
 type DivisionType = Database["public"]["Enums"]["DivisionType"]
 
-export default function Divisions({ kabinetId, disableEdit = false, data, path }: Props) {
+export default function Divisions({ kabinetId, disableEdit = false, data }: Props) {
   const queryClient = useQueryClient()
-  const router = useRouter()
   const { toast } = useToast()
 
   const deleteHandler = useCallback(

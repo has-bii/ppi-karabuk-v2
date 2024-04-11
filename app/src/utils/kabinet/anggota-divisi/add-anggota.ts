@@ -28,7 +28,7 @@ export default async function anggotaDivisiAdd({
     const { error, data } = await supabase
       .from("division_user")
       .insert({ division_id, user_id, division_user_type, kabinet_id })
-      .select("*,division(name,type),profiles(name,image)")
+      .select("*,division(id,name,type),profiles(id,name,image)")
       .single()
 
     if (error) {

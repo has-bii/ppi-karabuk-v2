@@ -109,7 +109,7 @@ export default function Kabinet({
         {/* Edit */}
         <div className="flex w-full flex-col gap-8 lg:flex-row">
           {/* Division */}
-          <Division kabinetId={id} data={data} disableEdit={disableEditDivision} path={path} />
+          <Division kabinetId={id} data={data} disableEdit={disableEditDivision} />
 
           {/* Proker & Anggota */}
           <Tabs defaultValue="anggota" className="w-full space-y-4">
