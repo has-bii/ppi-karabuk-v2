@@ -95,13 +95,6 @@ export default function Divisions({ kabinetId, disableEdit = false, data, path }
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={() =>
-                            router.push(`${path}/kabinet/${data.kabinet_id}/${data.id}`)
-                          }
-                        >
-                          Open
-                        </DropdownMenuItem>
                         <DialogTrigger asChild disabled={checkType(data.type)}>
                           <DropdownMenuItem>
                             <span>Delete</span>
