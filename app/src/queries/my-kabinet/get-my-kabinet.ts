@@ -1,7 +1,6 @@
 "use server"
 
 import createSupabaseServer from "@/lib/supabase/server"
-import { TypedSupabaseClient } from "@/lib/supabase/types"
 import { Database } from "@/types/database"
 import { ResponseWithData } from "@/types/response"
 
