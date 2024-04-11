@@ -152,6 +152,79 @@ export type Database = {
           },
         ]
       }
+      proker: {
+        Row: {
+          audience: string
+          created_at: string
+          description: string
+          division_id: string
+          id: string
+          kabinet_id: string
+          name: string
+          pj_id: string | null
+          place: string
+          status: Database["public"]["Enums"]["ProkerStatus"]
+          time_day: Database["public"]["Enums"]["Days"] | null
+          time_repetition: number | null
+          time_type: Database["public"]["Enums"]["ProkerTimeType"]
+          tujuan: string
+        }
+        Insert: {
+          audience: string
+          created_at?: string
+          description: string
+          division_id: string
+          id?: string
+          kabinet_id: string
+          name: string
+          pj_id?: string | null
+          place: string
+          status?: Database["public"]["Enums"]["ProkerStatus"]
+          time_day?: Database["public"]["Enums"]["Days"] | null
+          time_repetition?: number | null
+          time_type: Database["public"]["Enums"]["ProkerTimeType"]
+          tujuan: string
+        }
+        Update: {
+          audience?: string
+          created_at?: string
+          description?: string
+          division_id?: string
+          id?: string
+          kabinet_id?: string
+          name?: string
+          pj_id?: string | null
+          place?: string
+          status?: Database["public"]["Enums"]["ProkerStatus"]
+          time_day?: Database["public"]["Enums"]["Days"] | null
+          time_repetition?: number | null
+          time_type?: Database["public"]["Enums"]["ProkerTimeType"]
+          tujuan?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_proker_division_id_fkey"
+            columns: ["division_id"]
+            isOneToOne: false
+            referencedRelation: "division"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_proker_kabinet_id_fkey"
+            columns: ["kabinet_id"]
+            isOneToOne: false
+            referencedRelation: "kabinet"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_proker_pj_id_fkey"
+            columns: ["pj_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       settings: {
         Row: {
           setting: Database["public"]["Enums"]["Settings"]
@@ -272,9 +345,19 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      Days:
+        | "monday"
+        | "tuesday"
+        | "wednesday"
+        | "thursday"
+        | "friday"
+        | "saturday"
+        | "sunday"
       DivisionType: "ketua" | "sekretaris" | "bendahara" | "MPA" | "divisi"
       DivisionUserType: "ketua" | "anggota"
       Gender: "male" | "female"
+      ProkerStatus: "requesting" | "approved" | "rejected"
+      ProkerTimeType: "daily" | "weekly" | "monthly" | "yearly"
       Role: "ADMIN" | "BPH" | "STUDENT"
       Settings:
         | "signup_is_enabled"

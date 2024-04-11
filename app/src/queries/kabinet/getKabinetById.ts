@@ -11,12 +11,27 @@ export type KabinetByID = Database["public"]["Tables"]["kabinet"]["Row"] & {
 } & {
   division_user: (Database["public"]["Tables"]["division_user"]["Row"] & {
     division: {
+      id: Database["public"]["Tables"]["division"]["Row"]["id"]
       name: Database["public"]["Tables"]["division"]["Row"]["name"]
       type: Database["public"]["Tables"]["division"]["Row"]["type"]
     } | null
     profiles: {
+      id: Database["public"]["Tables"]["profiles"]["Row"]["id"]
       name: Database["public"]["Tables"]["profiles"]["Row"]["name"]
       image: Database["public"]["Tables"]["profiles"]["Row"]["image"]
+    } | null
+  })[]
+} & {
+  proker: (Database["public"]["Tables"]["proker"]["Row"] & {
+    profiles: {
+      id: Database["public"]["Tables"]["profiles"]["Row"]["id"]
+      name: Database["public"]["Tables"]["profiles"]["Row"]["name"]
+      image: Database["public"]["Tables"]["profiles"]["Row"]["image"]
+    } | null
+    division: {
+      id: Database["public"]["Tables"]["division"]["Row"]["id"]
+      name: Database["public"]["Tables"]["division"]["Row"]["name"]
+      type: Database["public"]["Tables"]["division"]["Row"]["type"]
     } | null
   })[]
 }
@@ -29,10 +44,12 @@ const getKabinetById = async (id: string) => {
       division_user(
         *,
         division(
+          id,
           name,
           type
         ),
         profiles(
+          id,
           name,
           image
         )
@@ -41,6 +58,19 @@ const getKabinetById = async (id: string) => {
         *,
         division_user(
           *
+        )
+      ),
+      proker(
+        *,
+        profiles(
+          id,
+          name,
+          image
+        ),
+        division(
+          id,
+          name,
+          type
         )
       )`
     )
@@ -58,10 +88,12 @@ const getKabinetByIdUncached = async (id: string) => {
       division_user(
         *,
         division(
+          id,
           name,
           type
         ),
         profiles(
+          id,
           name,
           image
         )
@@ -70,6 +102,19 @@ const getKabinetByIdUncached = async (id: string) => {
         *,
         division_user(
           *
+        )
+      ),
+      proker(
+        *,
+        profiles(
+          id,
+          name,
+          image
+        ),
+        division(
+          id,
+          name,
+          type
         )
       )`
     )

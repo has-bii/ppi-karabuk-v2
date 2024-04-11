@@ -20,6 +20,7 @@ export default async function Page({ params: { kabinet_id } }: Props) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  // fetch kabinet data
   const { data } = await getKabinetById(kabinet_id)
   if (!data) redirect("/bph/kabinet")
 
@@ -52,7 +53,7 @@ export default async function Page({ params: { kabinet_id } }: Props) {
         }),
   })
 
-  const { division } = userPosition
+  const { division, division_user_type } = userPosition
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
@@ -63,7 +64,11 @@ export default async function Page({ params: { kabinet_id } }: Props) {
         disableEditKabinet={division?.type !== "ketua"}
         disableEditDivision={division?.type !== "ketua" && division?.type !== "sekretaris"}
         disableEditAnggota={
-          division?.type !== "MPA" && division?.type !== "ketua" && division?.type !== "sekretaris"
+          division_user_type === "anggota"
+            ? true
+            : division?.type !== "MPA" &&
+              division?.type !== "ketua" &&
+              division?.type !== "sekretaris"
         }
         position={division!}
       />

@@ -1,4 +1,4 @@
-import Division from "@/components/kabinet/division/division"
+import Division from "@/components/kabinet/divisions/divisions"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,7 +11,7 @@ import Link from "next/link"
 import { getKabinetById } from "@/queries/kabinet/getKabinetById"
 import KabinetEdit from "@/components/kabinet/edit-kabinet"
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query"
-import AnggotaDivisi from "@/components/kabinet/division/anggota-divisi"
+import AnggotaDivisi from "@/components/kabinet/divisions/anggota-divisi"
 import { getProfilesCached } from "@/queries/profile/getProfilesCached"
 import { redirect } from "next/navigation"
 import KabinetImage from "@/components/kabinet/image-kabinet"

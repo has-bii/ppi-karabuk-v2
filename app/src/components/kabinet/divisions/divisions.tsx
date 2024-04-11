@@ -26,17 +26,20 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Database } from "@/types/database"
+import { useRouter } from "next/navigation"
 
 type Props = {
   kabinetId: string
   disableEdit?: boolean
   data: KabinetByID
+  path: string
 }
 
 type DivisionType = Database["public"]["Enums"]["DivisionType"]
 
-export default function Division({ kabinetId, disableEdit = false, data }: Props) {
+export default function Divisions({ kabinetId, disableEdit = false, data, path }: Props) {
   const queryClient = useQueryClient()
+  const router = useRouter()
   const { toast } = useToast()
 
   const deleteHandler = useCallback(
@@ -92,7 +95,13 @@ export default function Division({ kabinetId, disableEdit = false, data }: Props
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Open</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            router.push(`${path}/kabinet/${data.kabinet_id}/${data.id}`)
+                          }
+                        >
+                          Open
+                        </DropdownMenuItem>
                         <DialogTrigger asChild disabled={checkType(data.type)}>
                           <DropdownMenuItem>
                             <span>Delete</span>
