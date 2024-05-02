@@ -17,6 +17,7 @@ import { Badge } from "../ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
 import { Database } from "@/types/database"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
+import KabinetProker from "./proker-kabinet"
 
 type Props = {
   id: string
@@ -112,12 +113,14 @@ export default function Kabinet({
           <Division kabinetId={id} data={data} disableEdit={disableEditDivision} />
 
           {/* Proker & Anggota */}
-          <Tabs defaultValue="anggota" className="w-full space-y-4">
+          <Tabs defaultValue="anggota" className="w-full space-y-4 lg:w-3/4">
             <TabsList>
               <TabsTrigger value="proker">Proker</TabsTrigger>
               <TabsTrigger value="anggota">Anggota</TabsTrigger>
             </TabsList>
-            <TabsContent value="proker">We are working on this feature</TabsContent>
+            <TabsContent value="proker">
+              <KabinetProker initialData={data} kabinetId={id} />
+            </TabsContent>
             <TabsContent value="anggota" asChild>
               <AnggotaDivisi
                 kabinetId={id}
