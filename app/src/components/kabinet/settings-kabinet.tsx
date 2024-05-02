@@ -12,21 +12,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
+import { Sheet, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "../ui/button"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircleNotch, faEllipsisVertical } from "@fortawesome/free-solid-svg-icons"
@@ -55,8 +41,7 @@ import editKabinet from "@/utils/kabinet/edit-kabinet"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Database } from "@/types/database"
 import KabinetAddAnggota from "./user/add-anggota-kabinet"
-import { Label } from "../ui/label"
-import { Textarea } from "../ui/textarea"
+import ProkerAdd from "./proker/proker-add"
 
 type Props = {
   data: KabinetByID
@@ -74,20 +59,6 @@ const formSchema = z.object({
   end_date: z.date(),
 })
 
-const prokerSchema = z.object({
-  name: z.string().min(4, { message: "At least contains 4 characters!" }),
-  description: z.string().min(6, { message: "At least contains 6 characters!" }),
-  tujuan: z.string().min(6, { message: "At least contains 6 characters!" }),
-  audience: z.string().min(6, { message: "At least contains 6 characters!" }),
-  place: z.string().min(6, { message: "At least contains 6 characters!" }),
-  status: z.enum(["requesting", "approved", "rejected"]),
-  division_id: z.string().min(1, { message: "Divisi is required!" }),
-  time_type: z.enum(["daily", "weekly", "monthly", "yearly"]),
-  time_repition: z.number(),
-  time_day: z.enum(["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]),
-  pj_id: z.string().min(1, { message: "Divisi is required!" }),
-})
-
 export default function KabinetSettings({
   data,
   kabinet_id,
@@ -95,32 +66,17 @@ export default function KabinetSettings({
   position,
 }: Props) {
   const [isOpen, setOpen] = useState<boolean>(false)
+  const [isOpenProker, setOpenProker] = useState<boolean>(false)
   const queryClient = useQueryClient()
   const { toast } = useToast()
 
+  // Anggota Form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: data.name,
       start_date: new Date(data.start_date),
       end_date: new Date(data.end_date),
-    },
-  })
-
-  const prokerForm = useForm<z.infer<typeof prokerSchema>>({
-    resolver: zodResolver(prokerSchema),
-    defaultValues: {
-      name: "",
-      description: '',
-      audience: '', 
-      division_id: '',
-      pj_id: '',
-      place: '',
-      status: 'requesting',
-      time_day: 'sunday',
-      time_repition: 1,
-      time_type: 'weekly',
-      tujuan: ''
     },
   })
 
@@ -152,14 +108,6 @@ export default function KabinetSettings({
     [data]
   )
 
-  const prokerSubmitHandler = useCallback(
-    async (formData: z.infer<typeof prokerSchema>) => {
-      console.log("Form: ", JSON.stringify(formData, null, 2))
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data]
-  )
-
   const changeStatus = useCallback(async (kabinetId: string, status: boolean) => {
     toast({ description: `${status ? "show" : "hid"}ing the kabinet...` })
     const { message, status: resStatus } = await KabinetChangeStatus({ kabinetId, status })
@@ -178,7 +126,7 @@ export default function KabinetSettings({
   if (!disableEdit)
     return (
       <Dialog open={isOpen} onOpenChange={setOpen}>
-        <Sheet>
+        <Sheet open={isOpenProker} onOpenChange={setOpenProker}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="icon" variant="ghost">
@@ -316,89 +264,14 @@ export default function KabinetSettings({
               </SheetTrigger>
             </DropdownMenuContent>
           </DropdownMenu>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>Add Proker</SheetTitle>
-              <SheetDescription>Tambah Program Kerja ke salah satu divisi.</SheetDescription>
-            </SheetHeader>
-            <Form {...prokerForm}>
-              <form onSubmit={prokerForm.handleSubmit(prokerSubmitHandler)} className="flex flex-col gap-2">
-                <FormField
-                  control={prokerForm.control}
-                  name="name"
-                  render={({ field }) => (
-                    <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-left">
-                  Name
-                </Label>
-                <Input id="name" className="col-span-3" placeholder="Nama Program" />
-              </div>
-                    <FormItem className="space-y-1">
-                      <FormLabel>Nama Kabinet</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Start Up" type="text" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  type="submit"
-                  disabled={form.formState.isSubmitting}
-                  className="mt-2 inline-flex items-center gap-2"
-                >
-                  {form.formState.isSubmitting ? (
-                    <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" />
-                  ) : (
-                    ""
-                  )}
-                  {form.formState.isSubmitting ? "Loading..." : "Save"}
-                </Button>
-              </form>
-            </Form>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-left">
-                  Name
-                </Label>
-                <Input id="name" className="col-span-3" placeholder="Nama Program" />
-              </div>
-              <div className="grid grid-cols-4 items-start gap-4">
-                <Label htmlFor="description" className="mt-2 text-left">
-                  Description
-                </Label>
-                <Textarea id="description" className="col-span-3" placeholder="Deskripsi Program" />
-              </div>
-              <div className="grid grid-cols-4 items-start gap-4">
-                <Label htmlFor="tujuan" className="mt-2 text-left">
-                  Tujuan
-                </Label>
-                <Textarea id="tujuan" className="col-span-3" placeholder="Tujuan Program" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="audience" className="text-left">
-                  Target Peserta
-                </Label>
-                <Input id="audience" className="col-span-3" placeholder="Anggota PPI Karabuk" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="time_type" className="text-left">
-                  Tipe Waktu
-                </Label>
-                <Select>
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="Pilih tipe waktu" />
-                  </SelectTrigger>
-                  <SelectContent id="time_type">
-                    <SelectItem value="daily">Daily</SelectItem>
-                    <SelectItem value="weekly">Weekly</SelectItem>
-                    <SelectItem value="monthly">Monthly</SelectItem>
-                    <SelectItem value="yearly">Yearly</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </SheetContent>
+
+          {/* Add Proker */}
+          <ProkerAdd
+            kabinetId={kabinet_id}
+            isOpen={isOpenProker}
+            setOpenProker={setOpenProker}
+            data={data}
+          />
         </Sheet>
         <DialogContent>
           <KabinetAddAnggota

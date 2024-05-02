@@ -162,7 +162,6 @@ export type Database = {
           kabinet_id: string
           name: string
           pj_id: string | null
-          place: string
           status: Database["public"]["Enums"]["ProkerStatus"]
           time_day: Database["public"]["Enums"]["Days"] | null
           time_repetition: number | null
@@ -178,7 +177,6 @@ export type Database = {
           kabinet_id: string
           name: string
           pj_id?: string | null
-          place: string
           status?: Database["public"]["Enums"]["ProkerStatus"]
           time_day?: Database["public"]["Enums"]["Days"] | null
           time_repetition?: number | null
@@ -194,7 +192,6 @@ export type Database = {
           kabinet_id?: string
           name?: string
           pj_id?: string | null
-          place?: string
           status?: Database["public"]["Enums"]["ProkerStatus"]
           time_day?: Database["public"]["Enums"]["Days"] | null
           time_repetition?: number | null
