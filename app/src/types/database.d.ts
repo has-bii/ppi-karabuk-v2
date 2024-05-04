@@ -161,10 +161,10 @@ export type Database = {
           id: string
           kabinet_id: string
           name: string
-          pj_id: string | null
+          pj_id: string
           status: Database["public"]["Enums"]["ProkerStatus"]
           time_day: Database["public"]["Enums"]["Days"] | null
-          time_repetition: number | null
+          time_repetition: number
           time_type: Database["public"]["Enums"]["ProkerTimeType"]
           tujuan: string
         }
@@ -176,10 +176,10 @@ export type Database = {
           id?: string
           kabinet_id: string
           name: string
-          pj_id?: string | null
+          pj_id: string
           status?: Database["public"]["Enums"]["ProkerStatus"]
           time_day?: Database["public"]["Enums"]["Days"] | null
-          time_repetition?: number | null
+          time_repetition: number
           time_type: Database["public"]["Enums"]["ProkerTimeType"]
           tujuan: string
         }
@@ -191,10 +191,10 @@ export type Database = {
           id?: string
           kabinet_id?: string
           name?: string
-          pj_id?: string | null
+          pj_id?: string
           status?: Database["public"]["Enums"]["ProkerStatus"]
           time_day?: Database["public"]["Enums"]["Days"] | null
-          time_repetition?: number | null
+          time_repetition?: number
           time_type?: Database["public"]["Enums"]["ProkerTimeType"]
           tujuan?: string
         }

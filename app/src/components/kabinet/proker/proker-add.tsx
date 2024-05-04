@@ -17,18 +17,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
+import { SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Textarea } from "@/components/ui/textarea"
+import { useToast } from "@/components/ui/use-toast"
 import useUsersQuery from "@/hooks/users/useUsersQuery"
 import { KabinetByID } from "@/queries/kabinet/getKabinetById"
+import { Database } from "@/types/database"
+import kabinetProkerAdd from "@/utils/kabinet/proker/kabinet-add-proker"
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -51,13 +46,16 @@ const prokerSchema = z.object({
   status: z.enum(["requesting", "approved", "rejected"]),
   division_id: z.string().min(1, { message: "Divisi is required!" }),
   time_type: z.enum(["daily", "weekly", "monthly", "yearly"]),
-  time_repition: z.string().min(1, { message: "Repetisi is required!" }),
-  time_day: z.enum(["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]),
+  time_repetition: z.string(),
+  time_day: z
+    .enum(["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"])
+    .optional(),
   pj_id: z.string().min(1, { message: "PJ is required!" }),
 })
 
 export default function ProkerAdd({ kabinetId, isOpen, setOpenProker, data }: Props) {
   const { data: users, refetch, isRefetching } = useUsersQuery()
+  const { toast } = useToast()
 
   // Proker Form
   const prokerForm = useForm<z.infer<typeof prokerSchema>>({
@@ -68,9 +66,8 @@ export default function ProkerAdd({ kabinetId, isOpen, setOpenProker, data }: Pr
       audience: "",
       division_id: "",
       pj_id: "",
+      time_repetition: "1",
       status: "requesting",
-      time_day: "sunday",
-      time_repition: "1",
       time_type: "weekly",
       tujuan: "",
     },
@@ -78,11 +75,62 @@ export default function ProkerAdd({ kabinetId, isOpen, setOpenProker, data }: Pr
 
   const prokerSubmitHandler = useCallback(
     async (formData: z.infer<typeof prokerSchema>) => {
-      console.log("KabinetID: ", kabinetId)
-      console.log("DATA: ", JSON.stringify(formData, null, 2))
+      switch (formData.time_type) {
+        case "weekly":
+          if (!formData.time_day) prokerForm.setError("time_day", { message: "This is required!" })
+          if (formData.time_repetition === "0")
+            prokerForm.setError("time_repetition", { message: "This is required!" })
+
+          if (!formData.time_day || formData.time_repetition === "0") return
+          break
+
+        case "daily":
+          if (formData.time_repetition === "0") {
+            prokerForm.setError("time_repetition", { message: "This is required!" })
+            return
+          }
+          break
+
+        case "monthly":
+          if (formData.time_repetition === "0") {
+            prokerForm.setError("time_repetition", { message: "This is required!" })
+            return
+          }
+          break
+
+        case "yearly":
+          if (formData.time_repetition === "0") {
+            prokerForm.setError("time_repetition", { message: "This is required!" })
+            return
+          }
+          break
+
+        default:
+          break
+      }
+
+      const { message, status } = await kabinetProkerAdd({
+        ...formData,
+        time_repetition: parseInt(formData.time_repetition),
+        kabinet_id: kabinetId,
+        time_day:
+          formData.time_type === "weekly"
+            ? (formData.time_day as Database["public"]["Enums"]["Days"])
+            : null,
+      })
+
+      toast({ description: message, variant: status === "error" ? "destructive" : "default" })
+
+      if (status === "success") setOpenProker(false)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [kabinetId]
   )
+
+  useEffect(() => {
+    if (!isOpen) prokerForm.reset()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen])
 
   return (
     <SheetContent className="overflow-y-auto">
@@ -217,7 +265,7 @@ export default function ProkerAdd({ kabinetId, isOpen, setOpenProker, data }: Pr
           {/* Repetisi Waktu */}
           <FormField
             control={prokerForm.control}
-            name="time_repition"
+            name="time_repetition"
             render={({ field }) => (
               <FormItem className="grid grid-cols-4 items-center gap-x-4">
                 <FormLabel className="text-left">Repetisi</FormLabel>

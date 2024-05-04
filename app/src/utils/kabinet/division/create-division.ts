@@ -2,7 +2,6 @@
 
 import { createSupabaseServiceRole } from "@/lib/supabase/server"
 import { ResponseWithData } from "@/types/response"
-import { Database } from "@/types/database"
 import { revalidatePath } from "next/cache"
 import getUserRole from "@/utils/getUserRole"
 import { KabinetByID } from "@/queries/kabinet/getKabinetById"
@@ -35,6 +34,7 @@ export default async function createDivision({
     }
 
     revalidatePath(`/admin/kabinet/${kabinet_id}`)
+    revalidatePath(`/bph/kabinet/${kabinet_id}`)
 
     return { status: "success", message: "Created new division successfully", data }
   } catch (error) {
