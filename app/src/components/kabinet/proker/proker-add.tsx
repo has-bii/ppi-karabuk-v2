@@ -20,14 +20,13 @@ import {
 import { SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
-import useUsersQuery from "@/hooks/users/useUsersQuery"
 import { KabinetByID } from "@/queries/kabinet/getKabinetById"
 import { Database } from "@/types/database"
 import kabinetProkerAdd from "@/utils/kabinet/proker/kabinet-add-proker"
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Dispatch, useCallback, useEffect } from "react"
+import { Dispatch, useCallback } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -54,7 +53,6 @@ const prokerSchema = z.object({
 })
 
 export default function ProkerAdd({ kabinetId, isOpen, setOpenProker, data }: Props) {
-  const { data: users, refetch, isRefetching } = useUsersQuery()
   const { toast } = useToast()
 
   // Proker Form
@@ -72,6 +70,8 @@ export default function ProkerAdd({ kabinetId, isOpen, setOpenProker, data }: Pr
       tujuan: "",
     },
   })
+
+  const division_id_selected = prokerForm.watch("division_id")
 
   const prokerSubmitHandler = useCallback(
     async (formData: z.infer<typeof prokerSchema>) => {
@@ -126,11 +126,6 @@ export default function ProkerAdd({ kabinetId, isOpen, setOpenProker, data }: Pr
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [kabinetId]
   )
-
-  useEffect(() => {
-    if (!isOpen) prokerForm.reset()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen])
 
   return (
     <SheetContent className="overflow-y-auto">
@@ -327,11 +322,18 @@ export default function ProkerAdd({ kabinetId, isOpen, setOpenProker, data }: Pr
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="capitalize">
-                    {users?.map((user) => (
+                    {/* {users?.map((user) => (
                       <SelectItem key={user.id} value={user.id}>
                         {user.name}
                       </SelectItem>
-                    ))}
+                    ))} */}
+                    {data.division_user
+                      .filter((user) => user.division_id === division_id_selected)
+                      .map((filtered) => (
+                        <SelectItem key={filtered.user_id} value={filtered.user_id}>
+                          {filtered.profiles?.name || "No Name"}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
                 <div className="col-span-1"></div>
