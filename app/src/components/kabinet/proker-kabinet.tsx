@@ -3,7 +3,7 @@ import useKabinetByIdQuery from "@/hooks/kabinet/byId/useKabinetByIdQuery"
 import { KabinetByID } from "@/queries/kabinet/getKabinetById"
 import { DataTable } from "@/components/ui/data-table"
 import { ColumnDef } from "@tanstack/react-table"
-import { useCallback, useMemo } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -18,6 +18,9 @@ import { MoreHorizontal } from "lucide-react"
 import { useToast } from "../ui/use-toast"
 import kabinetProkerStatusChange from "@/utils/kabinet/proker/kabinet-change-status-proker"
 import kabinetProkerDelete from "@/utils/kabinet/proker/kabinet-delete.proker"
+import { Sheet } from "@/components/ui/sheet"
+import ProkerAdd from "./proker/proker-add"
+import { Proker } from "@/utils/kabinet/proker/kabinet-add-proker"
 
 type Props = {
   kabinetId: string
@@ -38,6 +41,8 @@ type DeleteProkerParams = {
 
 export default function KabinetProker({ initialData, kabinetId }: Props) {
   const { data, error } = useKabinetByIdQuery(kabinetId, initialData)
+  const [isOpenProker, setOpenProker] = useState<boolean>(false)
+  const [selectedProker, setSelectedProker] = useState<Proker | undefined>()
   const { toast } = useToast()
 
   const changeStatus = useCallback(async (params: ChangeStatusParams) => {
@@ -173,7 +178,15 @@ export default function KabinetProker({ initialData, kabinetId }: Props) {
                   Reject
                 </DropdownMenuCheckboxItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="font-medium">Edit Proker</DropdownMenuItem>
+                <DropdownMenuItem
+                  className="font-medium"
+                  onClick={() => {
+                    setSelectedProker(row.original)
+                    setOpenProker(true)
+                  }}
+                >
+                  Edit Proker
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="font-medium text-red-400"
@@ -191,9 +204,22 @@ export default function KabinetProker({ initialData, kabinetId }: Props) {
     []
   )
 
+  // useEffect(() => {
+  //   if (!isOpenProker) setSelectedProker(undefined)
+  // }, [isOpenProker])
+
   if (data)
     return (
       <>
+        <Sheet open={isOpenProker} onOpenChange={setOpenProker}>
+          <ProkerAdd
+            data={data}
+            isOpen={isOpenProker}
+            kabinetId={kabinetId}
+            setOpenProker={setOpenProker}
+            defaultValue={selectedProker}
+          />
+        </Sheet>
         <div className="w-full space-y-4 lg:space-y-2">
           <DataTable
             columns={columns}

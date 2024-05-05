@@ -22,7 +22,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
 import { KabinetByID } from "@/queries/kabinet/getKabinetById"
 import { Database } from "@/types/database"
-import kabinetProkerAdd from "@/utils/kabinet/proker/kabinet-add-proker"
+import kabinetProkerAdd, { Proker } from "@/utils/kabinet/proker/kabinet-add-proker"
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -30,14 +30,20 @@ import { Dispatch, useCallback } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+type NullableProker = Omit<Proker, "created_at"> & {
+  created_at?: string
+}
+
 type Props = {
   kabinetId: string
   isOpen: boolean
   setOpenProker: Dispatch<React.SetStateAction<boolean>>
   data: KabinetByID
+  defaultValue?: NullableProker
 }
 
 const prokerSchema = z.object({
+  id: z.string().optional(),
   name: z.string().min(4, { message: "At least contains 4 characters!" }),
   description: z.string().min(6, { message: "At least contains 6 characters!" }),
   tujuan: z.string().min(6, { message: "At least contains 6 characters!" }),
@@ -52,7 +58,7 @@ const prokerSchema = z.object({
   pj_id: z.string().min(1, { message: "PJ is required!" }),
 })
 
-export default function ProkerAdd({ kabinetId, isOpen, setOpenProker, data }: Props) {
+export default function ProkerAdd({ kabinetId, isOpen, setOpenProker, data, defaultValue }: Props) {
   const { toast } = useToast()
 
   // Proker Form
@@ -69,6 +75,14 @@ export default function ProkerAdd({ kabinetId, isOpen, setOpenProker, data }: Pr
       time_type: "weekly",
       tujuan: "",
     },
+    values:
+      defaultValue !== undefined
+        ? {
+            ...defaultValue,
+            time_repetition: defaultValue.time_repetition.toString(),
+            time_day: defaultValue.time_day || undefined,
+          }
+        : undefined,
   })
 
   const division_id_selected = prokerForm.watch("division_id")
