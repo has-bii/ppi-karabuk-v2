@@ -1,6 +1,6 @@
 "use client"
 import useKabinetByIdQuery from "@/hooks/kabinet/byId/useKabinetByIdQuery"
-import { KabinetByID } from "@/queries/kabinet/getKabinetById"
+import { KabinetByID, UserPosition } from "@/queries/kabinet/getKabinetById"
 import { DataTable } from "@/components/ui/data-table"
 import { ColumnDef } from "@tanstack/react-table"
 import { useCallback, useEffect, useMemo, useState } from "react"
@@ -21,10 +21,13 @@ import kabinetProkerDelete from "@/utils/kabinet/proker/kabinet-delete.proker"
 import { Sheet } from "@/components/ui/sheet"
 import ProkerAdd from "./proker/proker-add"
 import { Proker } from "@/utils/kabinet/proker/kabinet-add-proker"
+import { Database } from "@/types/database"
+import useUserProfileQuery from "@/hooks/user-profile/useUserProfileQuery"
 
 type Props = {
   kabinetId: string
   initialData: KabinetByID
+  userPosition?: UserPosition
 }
 
 type ChangeStatusParams = {
@@ -39,7 +42,8 @@ type DeleteProkerParams = {
   name: string
 }
 
-export default function KabinetProker({ initialData, kabinetId }: Props) {
+export default function KabinetProker({ initialData, kabinetId, userPosition }: Props) {
+  const { data: user } = useUserProfileQuery()
   const { data, error } = useKabinetByIdQuery(kabinetId, initialData)
   const [isOpenProker, setOpenProker] = useState<boolean>(false)
   const [selectedProker, setSelectedProker] = useState<Proker | undefined>()
@@ -147,7 +151,7 @@ export default function KabinetProker({ initialData, kabinetId }: Props) {
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
-          const { status, name, id } = row.original
+          const { status, name, id, division_id } = row.original
 
           return (
             <DropdownMenu>
@@ -162,18 +166,27 @@ export default function KabinetProker({ initialData, kabinetId }: Props) {
                 <DropdownMenuCheckboxItem
                   checked={status === "requesting"}
                   onClick={() => changeStatus({ id, name, status: "requesting" })}
+                  disabled={
+                    userPosition === undefined ? false : userPosition?.division?.name !== "MPA"
+                  }
                 >
                   Requesting
                 </DropdownMenuCheckboxItem>
                 <DropdownMenuCheckboxItem
                   checked={status === "approved"}
                   onClick={() => changeStatus({ id, name, status: "approved" })}
+                  disabled={
+                    userPosition === undefined ? false : userPosition?.division?.name !== "MPA"
+                  }
                 >
                   Approve
                 </DropdownMenuCheckboxItem>
                 <DropdownMenuCheckboxItem
                   checked={status === "rejected"}
                   onClick={() => changeStatus({ id, name, status: "rejected" })}
+                  disabled={
+                    userPosition === undefined ? false : userPosition?.division?.name !== "MPA"
+                  }
                 >
                   Reject
                 </DropdownMenuCheckboxItem>
@@ -184,6 +197,9 @@ export default function KabinetProker({ initialData, kabinetId }: Props) {
                     setSelectedProker(row.original)
                     setOpenProker(true)
                   }}
+                  disabled={
+                    userPosition === undefined ? false : userPosition?.division_id !== division_id
+                  }
                 >
                   Edit Proker
                 </DropdownMenuItem>
@@ -191,6 +207,9 @@ export default function KabinetProker({ initialData, kabinetId }: Props) {
                 <DropdownMenuItem
                   className="font-medium text-red-400"
                   onClick={() => deleteProker({ id, name, kabinet_id: kabinetId })}
+                  disabled={
+                    userPosition === undefined ? false : userPosition?.division_id !== division_id
+                  }
                 >
                   Delete Proker
                 </DropdownMenuItem>
@@ -218,6 +237,7 @@ export default function KabinetProker({ initialData, kabinetId }: Props) {
             kabinetId={kabinetId}
             setOpenProker={setOpenProker}
             defaultValue={selectedProker}
+            userPosition={userPosition}
           />
         </Sheet>
         <div className="w-full space-y-4 lg:space-y-2">

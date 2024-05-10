@@ -36,6 +36,8 @@ export type KabinetByID = Database["public"]["Tables"]["kabinet"]["Row"] & {
   })[]
 }
 
+export type UserPosition = KabinetByID["division_user"][0]
+
 const getKabinetById = async (id: string) => {
   return createSupabaseServiceRole()
     .from("kabinet")

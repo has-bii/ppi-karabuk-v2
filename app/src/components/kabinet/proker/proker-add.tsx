@@ -20,7 +20,7 @@ import {
 import { SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
-import { KabinetByID } from "@/queries/kabinet/getKabinetById"
+import { KabinetByID, UserPosition } from "@/queries/kabinet/getKabinetById"
 import { Database } from "@/types/database"
 import kabinetProkerAdd, { Proker } from "@/utils/kabinet/proker/kabinet-add-proker"
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons"
@@ -40,6 +40,7 @@ type Props = {
   setOpenProker: Dispatch<React.SetStateAction<boolean>>
   data: KabinetByID
   defaultValue?: NullableProker
+  userPosition?: UserPosition
 }
 
 const prokerSchema = z.object({
@@ -58,7 +59,14 @@ const prokerSchema = z.object({
   pj_id: z.string().min(1, { message: "PJ is required!" }),
 })
 
-export default function ProkerAdd({ kabinetId, isOpen, setOpenProker, data, defaultValue }: Props) {
+export default function ProkerAdd({
+  kabinetId,
+  isOpen,
+  setOpenProker,
+  data,
+  defaultValue,
+  userPosition,
+}: Props) {
   const { toast } = useToast()
 
   // Proker Form
@@ -68,7 +76,7 @@ export default function ProkerAdd({ kabinetId, isOpen, setOpenProker, data, defa
       name: "",
       description: "",
       audience: "",
-      division_id: "",
+      division_id: userPosition?.division_id || "",
       pj_id: "",
       time_repetition: "1",
       status: "requesting",
@@ -163,11 +171,15 @@ export default function ProkerAdd({ kabinetId, isOpen, setOpenProker, data, defa
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="capitalize">
-                    {data.division.map((divisi) => (
-                      <SelectItem key={divisi.id} value={divisi.id}>
-                        {divisi.name}
-                      </SelectItem>
-                    ))}
+                    {data.division
+                      .filter((div) =>
+                        userPosition === undefined ? true : div.id === userPosition.division_id
+                      )
+                      .map((divisi) => (
+                        <SelectItem key={divisi.id} value={divisi.id}>
+                          {divisi.name}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
                 <div className="col-span-1"></div>
@@ -393,7 +405,11 @@ export default function ProkerAdd({ kabinetId, isOpen, setOpenProker, data, defa
             ) : (
               ""
             )}
-            {prokerForm.formState.isSubmitting ? "Loading..." : "Tambah Program"}
+            {prokerForm.formState.isSubmitting
+              ? "Loading..."
+              : prokerForm.getValues("id")
+                ? "Perbarui Program"
+                : "Tambah Program"}
           </Button>
         </form>
       </Form>

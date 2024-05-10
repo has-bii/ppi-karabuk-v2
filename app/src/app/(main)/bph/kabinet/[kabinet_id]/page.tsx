@@ -1,4 +1,4 @@
-import { getKabinetById } from "@/queries/kabinet/getKabinetById"
+import { getKabinetById, KabinetByID, UserPosition } from "@/queries/kabinet/getKabinetById"
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query"
 import { getProfilesCached } from "@/queries/profile/getProfilesCached"
 import { redirect } from "next/navigation"
@@ -25,7 +25,9 @@ export default async function Page({ params: { kabinet_id } }: Props) {
   if (!data) redirect("/bph/kabinet")
 
   // Find user position
-  const userPosition = data.division_user.find((check) => check.user_id === user?.id)
+  const userPosition: UserPosition | undefined = data.division_user.find(
+    (check) => check.user_id === user?.id
+  )
 
   if (!userPosition) redirect("/bph/kabinet")
 
@@ -53,24 +55,24 @@ export default async function Page({ params: { kabinet_id } }: Props) {
         }),
   })
 
-  const { division, division_user_type } = userPosition
-
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Kabinet
         id={kabinet_id}
         path="/bph"
-        disableChangeImage={division?.type !== "ketua"}
-        disableEditKabinet={division?.type !== "ketua"}
-        disableEditDivision={division?.type !== "ketua" && division?.type !== "sekretaris"}
-        disableEditAnggota={
-          division_user_type === "anggota"
-            ? true
-            : division?.type !== "MPA" &&
-              division?.type !== "ketua" &&
-              division?.type !== "sekretaris"
+        disableChangeImage={userPosition.division?.type !== "ketua"}
+        disableEditKabinet={userPosition.division?.type !== "ketua"}
+        disableEditDivision={
+          userPosition.division?.type !== "ketua" && userPosition.division?.type !== "sekretaris"
         }
-        position={division!}
+        disableEditAnggota={
+          userPosition.division_user_type === "anggota"
+            ? true
+            : userPosition.division?.type !== "MPA" &&
+              userPosition.division?.type !== "ketua" &&
+              userPosition.division?.type !== "sekretaris"
+        }
+        userPosition={userPosition}
       />
     </HydrationBoundary>
   )

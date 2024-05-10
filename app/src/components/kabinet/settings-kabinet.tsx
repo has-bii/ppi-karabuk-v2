@@ -1,6 +1,6 @@
 "use client"
 
-import { KabinetByID } from "@/queries/kabinet/getKabinetById"
+import { KabinetByID, UserPosition } from "@/queries/kabinet/getKabinetById"
 import React, { useCallback, useState } from "react"
 import {
   DropdownMenu,
@@ -47,10 +47,7 @@ type Props = {
   data: KabinetByID
   disableEdit?: boolean
   kabinet_id: string
-  position?: {
-    name: Database["public"]["Tables"]["division"]["Row"]["name"]
-    type: Database["public"]["Tables"]["division"]["Row"]["type"]
-  }
+  userPosition?: UserPosition
 }
 
 const formSchema = z.object({
@@ -63,7 +60,7 @@ export default function KabinetSettings({
   data,
   kabinet_id,
   disableEdit = false,
-  position,
+  userPosition,
 }: Props) {
   const [isOpen, setOpen] = useState<boolean>(false)
   const [isOpenProker, setOpenProker] = useState<boolean>(false)
@@ -125,8 +122,18 @@ export default function KabinetSettings({
 
   if (!disableEdit)
     return (
-      <Dialog open={isOpen} onOpenChange={setOpen}>
+      <>
         <Sheet open={isOpenProker} onOpenChange={setOpenProker}>
+          {/* Add Proker */}
+          <ProkerAdd
+            kabinetId={kabinet_id}
+            isOpen={isOpenProker}
+            setOpenProker={setOpenProker}
+            data={data}
+            userPosition={userPosition}
+          />
+        </Sheet>
+        <Dialog open={isOpen} onOpenChange={setOpen}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="icon" variant="ghost">
@@ -257,31 +264,21 @@ export default function KabinetSettings({
                   <span>Add anggota</span>
                 </DropdownMenuItem>
               </DialogTrigger>
-              <SheetTrigger asChild>
-                <DropdownMenuItem>
-                  <span>Add Proker</span>
-                </DropdownMenuItem>
-              </SheetTrigger>
+              <DropdownMenuItem onClick={() => setOpenProker(true)}>
+                <span>Add Proker</span>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          {/* Add Proker */}
-          <ProkerAdd
-            kabinetId={kabinet_id}
-            isOpen={isOpenProker}
-            setOpenProker={setOpenProker}
-            data={data}
-          />
-        </Sheet>
-        <DialogContent>
-          <KabinetAddAnggota
-            kabinetData={data}
-            kabinet_id={kabinet_id}
-            queryClient={queryClient}
-            setOpen={setOpen}
-            position={position}
-          />
-        </DialogContent>
-      </Dialog>
+          <DialogContent>
+            <KabinetAddAnggota
+              kabinetData={data}
+              kabinet_id={kabinet_id}
+              queryClient={queryClient}
+              setOpen={setOpen}
+              userPosition={userPosition}
+            />
+          </DialogContent>
+        </Dialog>
+      </>
     )
 }

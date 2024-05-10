@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select"
 import { useToast } from "@/components/ui/use-toast"
 import useUsersQuery from "@/hooks/users/useUsersQuery"
-import { KabinetByID } from "@/queries/kabinet/getKabinetById"
+import { KabinetByID, UserPosition } from "@/queries/kabinet/getKabinetById"
 import { Database } from "@/types/database"
 import anggotaDivisiAdd from "@/utils/kabinet/anggota-divisi/add-anggota"
 import { faArrowsRotate, faCircleNotch } from "@fortawesome/free-solid-svg-icons"
@@ -33,10 +33,7 @@ import { z } from "zod"
 type Props = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
   kabinet_id: string
-  position?: {
-    name: Database["public"]["Tables"]["division"]["Row"]["name"]
-    type: Database["public"]["Tables"]["division"]["Row"]["type"]
-  }
+  userPosition?: UserPosition
   queryClient: QueryClient
   kabinetData: KabinetByID
 }
@@ -53,7 +50,7 @@ export default function KabinetAddAnggota({
   kabinet_id,
   queryClient,
   setOpen,
-  position,
+  userPosition,
   kabinetData,
 }: Props) {
   const { data: users, refetch, isRefetching } = useUsersQuery()
@@ -161,11 +158,11 @@ export default function KabinetAddAnggota({
                       <SelectContent>
                         {kabinetData?.division
                           .filter((divisi) => {
-                            if (position?.type === "divisi") {
-                              return divisi.name === position.name
-                            } else if (position?.type === "MPA") {
+                            if (userPosition?.division?.type === "divisi") {
+                              return divisi.name === userPosition?.division?.name
+                            } else if (userPosition?.division?.type === "MPA") {
                               return divisi.type === "MPA"
-                            } else if (position?.type === "ketua") {
+                            } else if (userPosition?.division?.type === "ketua") {
                               return divisi.type !== "MPA"
                             } else return true
                           })

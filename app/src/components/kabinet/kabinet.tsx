@@ -15,9 +15,9 @@ import AnggotaDivisi from "./divisions/anggota-divisi"
 import useKabinetByIdQuery from "@/hooks/kabinet/byId/useKabinetByIdQuery"
 import { Badge } from "../ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
-import { Database } from "@/types/database"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import KabinetProker from "./proker-kabinet"
+import { UserPosition } from "@/queries/kabinet/getKabinetById"
 
 type Props = {
   id: string
@@ -26,15 +26,12 @@ type Props = {
   disableEditAnggota?: boolean
   disableEditKabinet?: boolean
   path: string
-  position?: {
-    name: Database["public"]["Tables"]["division"]["Row"]["name"]
-    type: Database["public"]["Tables"]["division"]["Row"]["type"]
-  }
+  userPosition?: UserPosition
 }
 
 export default function Kabinet({
   id,
-  position,
+  userPosition,
   path,
   disableChangeImage = false,
   disableEditDivision = false,
@@ -102,7 +99,7 @@ export default function Kabinet({
               data={data}
               disableEdit={disableEditKabinet}
               kabinet_id={id}
-              position={position}
+              userPosition={userPosition}
             />
           </div>
         </div>
@@ -119,14 +116,14 @@ export default function Kabinet({
               <TabsTrigger value="anggota">Anggota</TabsTrigger>
             </TabsList>
             <TabsContent value="proker">
-              <KabinetProker initialData={data} kabinetId={id} />
+              <KabinetProker initialData={data} kabinetId={id} userPosition={userPosition} />
             </TabsContent>
             <TabsContent value="anggota" asChild>
               <AnggotaDivisi
                 kabinetId={id}
                 initialData={data}
                 disableEdit={disableEditAnggota}
-                position={position}
+                userPosition={userPosition}
               />
             </TabsContent>
           </Tabs>

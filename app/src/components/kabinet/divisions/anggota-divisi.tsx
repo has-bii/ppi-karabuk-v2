@@ -1,7 +1,7 @@
 "use client"
 
 import useKabinetByIdQuery from "@/hooks/kabinet/byId/useKabinetByIdQuery"
-import { KabinetByID } from "@/queries/kabinet/getKabinetById"
+import { KabinetByID, UserPosition } from "@/queries/kabinet/getKabinetById"
 import { DataTable } from "@/components/ui/data-table"
 import { ColumnDef } from "@tanstack/react-table"
 import { getImageFromS3 } from "@/utils/S3"
@@ -29,10 +29,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 type Props = {
   kabinetId: string
   disableEdit?: boolean
-  position?: {
-    name: Database["public"]["Tables"]["division"]["Row"]["name"]
-    type: Database["public"]["Tables"]["division"]["Row"]["type"]
-  }
+  userPosition?: UserPosition
   initialData: KabinetByID
   division_id?: string
 }
@@ -40,7 +37,7 @@ type Props = {
 export default function AnggotaDivisi({
   kabinetId,
   disableEdit = false,
-  position,
+  userPosition,
   initialData,
   division_id,
 }: Props) {
@@ -125,11 +122,13 @@ export default function AnggotaDivisi({
           let show = !disableEdit
 
           if (
-            (position?.type === "ketua" || position?.type === "sekretaris") &&
+            (userPosition?.division?.type === "ketua" ||
+              userPosition?.division?.type === "sekretaris") &&
             row.original.division?.type === "MPA"
           )
             show = false
-          if (position?.type === "MPA" && row.original.division?.type !== "MPA") show = false
+          if (userPosition?.division?.type === "MPA" && row.original.division?.type !== "MPA")
+            show = false
 
           if (show)
             return (
