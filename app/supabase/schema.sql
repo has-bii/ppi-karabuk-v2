@@ -10,27 +10,21 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
-
-CREATE EXTENSION IF NOT EXISTS "pgsodium" WITH SCHEMA "pgsodium";
-
 CREATE SCHEMA IF NOT EXISTS "public";
 
 ALTER SCHEMA "public" OWNER TO "pg_database_owner";
 
-COMMENT ON SCHEMA "public" IS 'standard public schema';
+CREATE TYPE "public"."Days" AS ENUM (
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday'
+);
 
-CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
-
-CREATE EXTENSION IF NOT EXISTS "pg_stat_statements" WITH SCHEMA "extensions";
-
-CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA "extensions";
-
-CREATE EXTENSION IF NOT EXISTS "pgjwt" WITH SCHEMA "extensions";
-
-CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
+ALTER TYPE "public"."Days" OWNER TO "postgres";
 
 CREATE TYPE "public"."DivisionType" AS ENUM (
     'ketua',
@@ -55,6 +49,23 @@ CREATE TYPE "public"."Gender" AS ENUM (
 );
 
 ALTER TYPE "public"."Gender" OWNER TO "postgres";
+
+CREATE TYPE "public"."ProkerStatus" AS ENUM (
+    'requesting',
+    'approved',
+    'rejected'
+);
+
+ALTER TYPE "public"."ProkerStatus" OWNER TO "postgres";
+
+CREATE TYPE "public"."ProkerTimeType" AS ENUM (
+    'daily',
+    'weekly',
+    'monthly',
+    'yearly'
+);
+
+ALTER TYPE "public"."ProkerTimeType" OWNER TO "postgres";
 
 CREATE TYPE "public"."Role" AS ENUM (
     'ADMIN',
@@ -161,7 +172,9 @@ CREATE TABLE IF NOT EXISTS "public"."kabinet" (
     "name" "text" NOT NULL,
     "start_date" "date" DEFAULT "now"() NOT NULL,
     "end_date" "date" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "isShow" boolean DEFAULT false NOT NULL,
+    "image" "text"
 );
 
 ALTER TABLE "public"."kabinet" OWNER TO "postgres";
@@ -175,6 +188,24 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
 );
 
 ALTER TABLE "public"."profiles" OWNER TO "postgres";
+
+CREATE TABLE IF NOT EXISTS "public"."proker" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "name" "text" NOT NULL,
+    "description" "text" NOT NULL,
+    "tujuan" "text" NOT NULL,
+    "audience" "text" NOT NULL,
+    "time_type" "public"."ProkerTimeType" NOT NULL,
+    "time_repetition" smallint NOT NULL,
+    "time_day" "public"."Days",
+    "pj_id" "uuid" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "status" "public"."ProkerStatus" DEFAULT 'requesting'::"public"."ProkerStatus" NOT NULL,
+    "kabinet_id" "uuid" NOT NULL,
+    "division_id" "uuid" NOT NULL
+);
+
+ALTER TABLE "public"."proker" OWNER TO "postgres";
 
 CREATE TABLE IF NOT EXISTS "public"."settings" (
     "setting" "public"."Settings" NOT NULL,
@@ -223,6 +254,9 @@ ALTER TABLE ONLY "public"."division_user"
 ALTER TABLE ONLY "public"."kabinet"
     ADD CONSTRAINT "kabinet_pkey" PRIMARY KEY ("id");
 
+ALTER TABLE ONLY "public"."proker"
+    ADD CONSTRAINT "proker_pkey" PRIMARY KEY ("id");
+
 ALTER TABLE ONLY "public"."settings"
     ADD CONSTRAINT "settings_pkey" PRIMARY KEY ("setting");
 
@@ -255,6 +289,15 @@ ALTER TABLE ONLY "public"."division_user"
 ALTER TABLE ONLY "public"."division_user"
     ADD CONSTRAINT "public_division_user_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
+ALTER TABLE ONLY "public"."proker"
+    ADD CONSTRAINT "public_proker_division_id_fkey" FOREIGN KEY ("division_id") REFERENCES "public"."division"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY "public"."proker"
+    ADD CONSTRAINT "public_proker_kabinet_id_fkey" FOREIGN KEY ("kabinet_id") REFERENCES "public"."kabinet"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY "public"."proker"
+    ADD CONSTRAINT "public_proker_pj_id_fkey" FOREIGN KEY ("pj_id") REFERENCES "public"."profiles"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
 ALTER TABLE ONLY "public"."student_database"
     ADD CONSTRAINT "public_student_database_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -264,6 +307,8 @@ ALTER TABLE ONLY "public"."user_role"
 CREATE POLICY "Enable read access for all users" ON "public"."division" FOR SELECT TO "authenticated" USING (true);
 
 CREATE POLICY "Enable read access for all users" ON "public"."division_user" FOR SELECT TO "authenticated" USING (true);
+
+CREATE POLICY "Enable read access for all users" ON "public"."proker" FOR SELECT TO "authenticated" USING (true);
 
 CREATE POLICY "Enable read access for all users" ON "public"."settings" FOR SELECT TO "authenticated" USING (true);
 
@@ -276,6 +321,8 @@ ALTER TABLE "public"."division_user" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."kabinet" ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "public"."proker" ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE "public"."settings" ENABLE ROW LEVEL SECURITY;
 
@@ -321,6 +368,10 @@ GRANT ALL ON TABLE "public"."kabinet" TO "service_role";
 GRANT ALL ON TABLE "public"."profiles" TO "anon";
 GRANT ALL ON TABLE "public"."profiles" TO "authenticated";
 GRANT ALL ON TABLE "public"."profiles" TO "service_role";
+
+GRANT ALL ON TABLE "public"."proker" TO "anon";
+GRANT ALL ON TABLE "public"."proker" TO "authenticated";
+GRANT ALL ON TABLE "public"."proker" TO "service_role";
 
 GRANT ALL ON TABLE "public"."settings" TO "anon";
 GRANT ALL ON TABLE "public"."settings" TO "authenticated";
