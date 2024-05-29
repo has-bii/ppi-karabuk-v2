@@ -2,7 +2,7 @@
 import useKabinetByIdQuery from "@/hooks/kabinet/byId/useKabinetByIdQuery"
 import { KabinetByID, UserPosition } from "@/queries/kabinet/getKabinetById"
 import { DataTable } from "@/components/ui/data-table"
-import { ColumnDef } from "@tanstack/react-table"
+import { ColumnDef, ColumnFiltersState, Row, SortingFn } from "@tanstack/react-table"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import {
   DropdownMenu,
@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "../ui/button"
-import { MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { useToast } from "../ui/use-toast"
 import kabinetProkerStatusChange from "@/utils/kabinet/proker/kabinet-change-status-proker"
 import kabinetProkerDelete from "@/utils/kabinet/proker/kabinet-delete.proker"
@@ -23,6 +23,7 @@ import ProkerAdd from "./proker/proker-add"
 import { Proker } from "@/utils/kabinet/proker/kabinet-add-proker"
 import { Database } from "@/types/database"
 import useUserProfileQuery from "@/hooks/user-profile/useUserProfileQuery"
+import { boolean } from "zod"
 
 type Props = {
   kabinetId: string
@@ -44,6 +45,7 @@ type DeleteProkerParams = {
 
 export default function KabinetProker({ initialData, kabinetId, userPosition }: Props) {
   const { data: user } = useUserProfileQuery()
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const { data, error } = useKabinetByIdQuery(kabinetId, initialData)
   const [isOpenProker, setOpenProker] = useState<boolean>(false)
   const [selectedProker, setSelectedProker] = useState<Proker | undefined>()
@@ -70,6 +72,24 @@ export default function KabinetProker({ initialData, kabinetId, userPosition }: 
   const columns: ColumnDef<KabinetByID["proker"][0]>[] = useMemo(
     () => [
       {
+        id: "division",
+        accessorKey: "division",
+        header: () => <span className="ml-3">Divisi</span>,
+        cell: ({ row }) => (
+          <span className="ml-3 whitespace-nowrap">{row.original.division?.name}</span>
+        ),
+        sortingFn: (
+          rowA: Row<KabinetByID["proker"][0]>,
+          rowB: Row<KabinetByID["proker"][0]>,
+          columnId: string
+        ) => (rowA.original.division?.name! < rowB.original.division?.name! ? 1 : -1),
+        filterFn: (
+          row: Row<KabinetByID["proker"][0]>,
+          columndId: string,
+          filterValue: string
+        ): boolean => row.original.division_id === filterValue,
+      },
+      {
         id: "name",
         accessorKey: "name",
         header: () => <span className="ml-3">Nama</span>,
@@ -85,14 +105,6 @@ export default function KabinetProker({ initialData, kabinetId, userPosition }: 
           >
             {row.original.status}
           </span>
-        ),
-      },
-      {
-        id: "division",
-        accessorKey: "division",
-        header: () => <span className="ml-3">Divisi</span>,
-        cell: ({ row }) => (
-          <span className="ml-3 whitespace-nowrap">{row.original.division?.name}</span>
         ),
       },
       {
@@ -223,6 +235,12 @@ export default function KabinetProker({ initialData, kabinetId, userPosition }: 
     []
   )
 
+  const sortingDivision: SortingFn<KabinetByID["proker"][0]> = (
+    rowA: Row<KabinetByID["proker"][0]>,
+    rowB: Row<KabinetByID["proker"][0]>,
+    columnId: string
+  ) => (rowA.original.division?.name! < rowB.original.division?.name! ? 1 : -1)
+
   // useEffect(() => {
   //   if (!isOpenProker) setSelectedProker(undefined)
   // }, [isOpenProker])
@@ -246,6 +264,7 @@ export default function KabinetProker({ initialData, kabinetId, userPosition }: 
             data={data.proker}
             filteringByName={false}
             showColumnVisibility={false}
+            defaultSortingColumn={[{ id: "division", desc: true }]}
           />
         </div>
       </>

@@ -38,6 +38,8 @@ interface DataTableProps<TData, TValue> {
   defaultVisibility?: VisibilityState
   filteringByName?: boolean
   showColumnVisibility?: boolean
+  defaultSortingColumn?: SortingState
+  defaultFilter?: ColumnFiltersState
 }
 
 export function DataTable<TData, TValue>({
@@ -46,9 +48,11 @@ export function DataTable<TData, TValue>({
   defaultVisibility = {},
   filteringByName = true,
   showColumnVisibility = true,
+  defaultSortingColumn = [],
+  defaultFilter = [],
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [sorting, setSorting] = useState<SortingState>(defaultSortingColumn)
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(defaultFilter)
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(defaultVisibility)
   const [rowSelection, setRowSelection] = useState({})
 
