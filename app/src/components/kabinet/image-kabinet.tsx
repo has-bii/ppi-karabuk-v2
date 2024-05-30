@@ -91,7 +91,7 @@ export default function KabinetImage({ id, disableChange = false, data }: Props)
         <Image
           alt=""
           fill
-          sizes="33vw"
+          sizes="66vw"
           quality={100}
           src={openPublicFile(data.image, "kabinet", supabase)}
           className="object-cover"
