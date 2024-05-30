@@ -2,6 +2,7 @@
 
 import { createSupabaseServiceRole } from "@/lib/supabase/server"
 import { Response } from "@/types/response"
+import { revalidatePath } from "next/cache"
 
 type Params = {
   kabinetId: string
@@ -24,6 +25,9 @@ export default async function KabinetChangeStatus({
       console.error("Failed to change kabinet status: ", error.message)
       return { status: "error", message: error.message }
     }
+
+    revalidatePath(`/admin/kabinet/${kabinetId}`)
+    revalidatePath(`/bph/kabinet/${kabinetId}`)
 
     return { status: "success", message: "Kabinet status has been changed" }
   } catch (error) {

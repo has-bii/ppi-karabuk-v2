@@ -2,6 +2,7 @@
 
 import { createSupabaseServiceRole } from "@/lib/supabase/server"
 import { Response } from "@/types/response"
+import { revalidatePath } from "next/cache"
 
 type Params = {
   kabinetId: string
@@ -21,6 +22,9 @@ export default async function KabinetUploadImage({ path, kabinetId }: Params): P
       console.error("Failed to update kabinet image: ", error.message)
       return { status: "error", message: error.message }
     }
+
+    revalidatePath(`/admin/kabinet/${kabinetId}`)
+    revalidatePath(`/bph/kabinet/${kabinetId}`)
 
     return { status: "success", message: "Cover has been updated" }
   } catch (error) {
